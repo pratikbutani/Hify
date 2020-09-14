@@ -1,228 +1,222 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/layout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.activities.account.RegisterActivity">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/layout"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	tools:context=".ui.activities.account.RegisterActivity">
 
-    <ScrollView
-        android:overScrollMode="never"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="none">
+	<ScrollView
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:overScrollMode="never"
+		android:scrollbars="none">
 
-        <FrameLayout
-            android:layout_gravity="center"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+		<FrameLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center">
 
-            <LinearLayout
-                android:gravity="center"
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                >
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:gravity="center"
+				android:orientation="vertical">
 
-                <TextView
-                    fontPath="fonts/bold.ttf"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="Get on Board"
-                    android:textSize="32sp"
-                    tools:ignore="MissingPrefix" />
+				<TextView
+					fontPath="fonts/bold.ttf"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:gravity="center"
+					android:text="Get on Board"
+					android:textSize="32sp"
+					tools:ignore="MissingPrefix" />
 
-                <LinearLayout
-                    android:layout_marginTop="10dp"
-                    android:orientation="horizontal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+				<LinearLayout
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginTop="10dp"
+					android:orientation="horizontal">
 
-                    <de.hdodenhof.circleimageview.CircleImageView
-                        android:id="@+id/profile_image"
-                        android:layout_width="80dp"
-                        android:layout_height="100dp"
-                        android:layout_gravity="center_horizontal"
-                        android:onClick="setProfilepic"
-                        android:src="@drawable/default_profile_picture" />
+					<de.hdodenhof.circleimageview.CircleImageView
+						android:id="@+id/profile_image"
+						android:layout_width="80dp"
+						android:layout_height="100dp"
+						android:layout_gravity="center_horizontal"
+						android:onClick="setProfilepic"
+						android:src="@drawable/default_profile_picture" />
 
-                    <Button
-                        android:layout_gravity="center"
-                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:onClick="setProfilepic"
-                        android:textColor="#757575"
-                        android:text="Select profile picture"
-                        android:layout_marginStart="10dp"
-                        android:textAllCaps="false"
-                        android:textSize="16sp" />
+					<Button
+						style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_gravity="center"
+						android:layout_marginStart="10dp"
+						android:onClick="setProfilepic"
+						android:text="Select profile picture"
+						android:textAllCaps="false"
+						android:textColor="#757575"
+						android:textSize="16sp" />
 
 
-                </LinearLayout>
+				</LinearLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/username_holder"
-                    android:hint="Username"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginBottom="20dp"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+				<com.google.android.material.textfield.TextInputLayout
+					android:id="@+id/username_holder"
+					style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginTop="15dp"
+					android:layout_marginBottom="20dp"
+					android:hint="Username">
 
-                    <EditText
-                        android:id="@+id/username"
-                        android:layout_width="300dp"
-                        android:layout_height="wrap_content"
-                        android:inputType="textPersonName"
-                        android:maxLength="25" />
+					<EditText
+						android:id="@+id/username"
+						android:layout_width="300dp"
+						android:layout_height="wrap_content"
+						android:inputType="textPersonName"
+						android:maxLength="25" />
 
-                </com.google.android.material.textfield.TextInputLayout>
+				</com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/name_holder"
-                    android:hint="Full Name"
-                    android:layout_marginBottom="20dp"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+				<com.google.android.material.textfield.TextInputLayout
+					android:id="@+id/name_holder"
+					style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginBottom="20dp"
+					android:hint="Full Name">
 
-                    <EditText
-                        android:id="@+id/name"
-                        android:layout_width="300dp"
-                        android:layout_height="wrap_content"
-                        android:inputType="textCapWords"
-                        android:maxLength="25"
-                        />
+					<EditText
+						android:id="@+id/name"
+						android:layout_width="300dp"
+						android:layout_height="wrap_content"
+						android:inputType="textCapWords"
+						android:maxLength="25" />
 
-                </com.google.android.material.textfield.TextInputLayout>
+				</com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/email_holder"
-                    android:hint="Email"
-                    android:layout_marginBottom="20dp"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+				<com.google.android.material.textfield.TextInputLayout
+					android:id="@+id/email_holder"
+					style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginBottom="20dp"
+					android:hint="Email">
 
-                    <EditText
-                        android:id="@+id/email"
-                        android:layout_width="300dp"
-                        android:layout_height="wrap_content"
-                        android:inputType="textEmailAddress"
-                        />
+					<EditText
+						android:id="@+id/email"
+						android:layout_width="300dp"
+						android:layout_height="wrap_content"
+						android:inputType="textEmailAddress" />
 
-                </com.google.android.material.textfield.TextInputLayout>
+				</com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/location_holder"
-                    android:hint="City"
-                    android:layout_marginBottom="20dp"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+				<com.google.android.material.textfield.TextInputLayout
+					android:id="@+id/location_holder"
+					style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginBottom="20dp"
+					android:hint="City">
 
-                    <EditText
-                        android:id="@+id/location"
-                        android:layout_width="300dp"
-                        android:layout_height="wrap_content"
-                        android:inputType="textPostalAddress"
-                        />
+					<EditText
+						android:id="@+id/location"
+						android:layout_width="300dp"
+						android:layout_height="wrap_content"
+						android:inputType="textPostalAddress" />
 
-                </com.google.android.material.textfield.TextInputLayout>
+				</com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/password_holder"
-                    android:hint="Password"
-                    android:layout_marginBottom="20dp"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="wrap_content"
-                    app:passwordToggleEnabled="true"
-                    android:layout_height="wrap_content">
+				<com.google.android.material.textfield.TextInputLayout
+					android:id="@+id/password_holder"
+					style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginBottom="20dp"
+					android:hint="Password"
+					app:passwordToggleEnabled="true">
 
-                    <EditText
-                        android:id="@+id/password"
-                        android:layout_width="300dp"
-                        android:layout_height="wrap_content"
-                        android:inputType="textPassword"
-                        />
+					<EditText
+						android:id="@+id/password"
+						android:layout_width="300dp"
+						android:layout_height="wrap_content"
+						android:inputType="textPassword" />
 
 
-                </com.google.android.material.textfield.TextInputLayout>
+				</com.google.android.material.textfield.TextInputLayout>
 
-                <TextView
-                    android:layout_gravity="center"
-                    android:text="By creating an account you agree to our"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_gravity="center"
+					android:text="By creating an account you agree to our" />
 
-                <LinearLayout
-                    android:layout_gravity="center"
-                    android:orientation="horizontal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+				<LinearLayout
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_gravity="center"
+					android:orientation="horizontal">
 
-                    <androidx.appcompat.widget.AppCompatButton
-                        android:layout_gravity="center"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Terms and Use"
-                        android:onClick="openTerms"
-                        style="@style/Widget.AppCompat.Button.Borderless.Colored"
-                        android:textAllCaps="false"
-                        android:textSize="16sp" />
+					<androidx.appcompat.widget.AppCompatButton
+						style="@style/Widget.AppCompat.Button.Borderless.Colored"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_gravity="center"
+						android:onClick="openTerms"
+						android:text="Terms and Use"
+						android:textAllCaps="false"
+						android:textSize="16sp" />
 
-                    <TextView
-                        android:layout_gravity="center"
-                        android:text="&amp;"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_gravity="center"
+						android:text="&amp;" />
 
-                    <androidx.appcompat.widget.AppCompatButton
-                        android:layout_gravity="center"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Privacy Policy"
-                        android:onClick="openPolicy"
-                        style="@style/Widget.AppCompat.Button.Borderless.Colored"
-                        android:textAllCaps="false"
-                        android:textSize="16sp" />
+					<androidx.appcompat.widget.AppCompatButton
+						style="@style/Widget.AppCompat.Button.Borderless.Colored"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_gravity="center"
+						android:onClick="openPolicy"
+						android:text="Privacy Policy"
+						android:textAllCaps="false"
+						android:textSize="16sp" />
 
-                </LinearLayout>
+				</LinearLayout>
 
-                <androidx.appcompat.widget.AppCompatButton
-                    android:layout_gravity="center"
-                    android:id="@+id/button"
-                    style="@style/Widget.AppCompat.Button.Colored"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Sign Up"
-                    android:padding="10dp"
-                    android:layout_marginTop="10dp"
-                    android:textAllCaps="false"
-                    android:textSize="16sp" />
+				<androidx.appcompat.widget.AppCompatButton
+					android:id="@+id/button"
+					style="@style/Widget.AppCompat.Button.Colored"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_gravity="center"
+					android:layout_marginTop="10dp"
+					android:padding="10dp"
+					android:text="Sign Up"
+					android:textAllCaps="false"
+					android:textSize="16sp" />
 
-                <Button
-                    android:layout_marginBottom="20dp"
-                    android:layout_gravity="bottom|center"
-                    android:id="@+id/button2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="onLogin"
-                    android:textColor="#989898"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    android:text="I am already a member"
-                    android:textAllCaps="false"
-                    android:textSize="16sp" />
+				<Button
+					android:id="@+id/button2"
+					style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_gravity="bottom|center"
+					android:layout_marginBottom="20dp"
+					android:onClick="onLogin"
+					android:text="I am already a member"
+					android:textAllCaps="false"
+					android:textColor="#989898"
+					android:textSize="16sp" />
 
-            </LinearLayout>
+			</LinearLayout>
 
 
-        </FrameLayout>
+		</FrameLayout>
 
-    </ScrollView>
+	</ScrollView>
 
 </FrameLayout>

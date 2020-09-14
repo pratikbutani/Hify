@@ -12,65 +12,65 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class RecyclerViewTouchHelper extends ItemTouchHelper.SimpleCallback {
 
-    private RecyclerItemTouchHelperListener listener;
+	private RecyclerItemTouchHelperListener listener;
 
-    public RecyclerViewTouchHelper(int dragDirs, int swipeDirs, RecyclerItemTouchHelperListener listener) {
-        super(dragDirs, swipeDirs);
-        this.listener = listener;
-    }
+	public RecyclerViewTouchHelper(int dragDirs, int swipeDirs, RecyclerItemTouchHelperListener listener) {
+		super(dragDirs, swipeDirs);
+		this.listener = listener;
+	}
 
-    @Override
-    public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-        return true;
-    }
+	@Override
+	public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+		return true;
+	}
 
-    @Override
-    public void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
-        if (viewHolder != null) {
-            final View foregroundView = ((SearchFriendAdapter.ViewHolder) viewHolder).viewForeground;
+	@Override
+	public void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
+		if (viewHolder != null) {
+			final View foregroundView = ((SearchFriendAdapter.ViewHolder) viewHolder).viewForeground;
 
-            getDefaultUIUtil().onSelected(foregroundView);
-        }
-    }
+			getDefaultUIUtil().onSelected(foregroundView);
+		}
+	}
 
-    @Override
-    public void onChildDrawOver(Canvas c, RecyclerView recyclerView,
-                                RecyclerView.ViewHolder viewHolder, float dX, float dY,
-                                int actionState, boolean isCurrentlyActive) {
-        final View foregroundView = ((SearchFriendAdapter.ViewHolder) viewHolder).viewForeground;
-        getDefaultUIUtil().onDrawOver(c, recyclerView, foregroundView, dX, dY,
-                actionState, isCurrentlyActive);
-    }
+	@Override
+	public void onChildDrawOver(Canvas c, RecyclerView recyclerView,
+	                            RecyclerView.ViewHolder viewHolder, float dX, float dY,
+	                            int actionState, boolean isCurrentlyActive) {
+		final View foregroundView = ((SearchFriendAdapter.ViewHolder) viewHolder).viewForeground;
+		getDefaultUIUtil().onDrawOver(c, recyclerView, foregroundView, dX, dY,
+				actionState, isCurrentlyActive);
+	}
 
-    @Override
-    public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-        final View foregroundView = ((SearchFriendAdapter.ViewHolder) viewHolder).viewForeground;
-        getDefaultUIUtil().clearView(foregroundView);
-    }
+	@Override
+	public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+		final View foregroundView = ((SearchFriendAdapter.ViewHolder) viewHolder).viewForeground;
+		getDefaultUIUtil().clearView(foregroundView);
+	}
 
-    @Override
-    public void onChildDraw(Canvas c, RecyclerView recyclerView,
-                            RecyclerView.ViewHolder viewHolder, float dX, float dY,
-                            int actionState, boolean isCurrentlyActive) {
-        final View foregroundView = ((SearchFriendAdapter.ViewHolder) viewHolder).viewForeground;
+	@Override
+	public void onChildDraw(Canvas c, RecyclerView recyclerView,
+	                        RecyclerView.ViewHolder viewHolder, float dX, float dY,
+	                        int actionState, boolean isCurrentlyActive) {
+		final View foregroundView = ((SearchFriendAdapter.ViewHolder) viewHolder).viewForeground;
 
-        getDefaultUIUtil().onDraw(c, recyclerView, foregroundView, dX, dY,
-                actionState, isCurrentlyActive);
-    }
+		getDefaultUIUtil().onDraw(c, recyclerView, foregroundView, dX, dY,
+				actionState, isCurrentlyActive);
+	}
 
-    @Override
-    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-        listener.onSwiped(viewHolder, direction, viewHolder.getAdapterPosition());
-    }
+	@Override
+	public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+		listener.onSwiped(viewHolder, direction, viewHolder.getAdapterPosition());
+	}
 
-    @Override
-    public int convertToAbsoluteDirection(int flags, int layoutDirection) {
-        return super.convertToAbsoluteDirection(flags, layoutDirection);
-    }
+	@Override
+	public int convertToAbsoluteDirection(int flags, int layoutDirection) {
+		return super.convertToAbsoluteDirection(flags, layoutDirection);
+	}
 
-    public interface RecyclerItemTouchHelperListener {
-        void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position);
-    }
+	public interface RecyclerItemTouchHelperListener {
+		void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position);
+	}
 }
 
 

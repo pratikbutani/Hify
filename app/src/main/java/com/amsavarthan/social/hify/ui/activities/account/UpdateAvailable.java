@@ -11,8 +11,8 @@ import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
-import android.os.Environment;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -40,137 +40,137 @@ import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 
 public class UpdateAvailable extends AppCompatActivity {
 
-    private Button button;
-    private TextView textview;
-    private String link,version,improvements;
-    ArrayList<Long> list = new ArrayList<>();
-    private long refid;
-    public BroadcastReceiver onComplete = new BroadcastReceiver() {
+	ArrayList<Long> list = new ArrayList<>();
+	public BroadcastReceiver onComplete = new BroadcastReceiver() {
 
-        public void onReceive(Context ctxt, Intent intent) {
+		public void onReceive(Context ctxt, Intent intent) {
 
-            long referenceId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
-            list.remove(referenceId);
-            if (list.isEmpty()) {
-                NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+			long referenceId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
+			list.remove(referenceId);
+			if (list.isEmpty()) {
+				NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-                PendingIntent pendingIntent = PendingIntent.getActivity(ctxt, 0, intent, 0);
+				PendingIntent pendingIntent = PendingIntent.getActivity(ctxt, 0, intent, 0);
 
-                NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
-                        UpdateAvailable.this, "other_channel");
+				NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
+						UpdateAvailable.this, "other_channel");
 
-                android.app.Notification notification;
-                notification = mBuilder
-                        .setAutoCancel(true)
-                        .setContentTitle("Hify_v" + version+".apk")
-                        .setColorized(true)
-                        .setContentIntent(pendingIntent)
-                        .setColor(Color.parseColor("#2591FC"))
-                        .setSmallIcon(R.mipmap.ic_launcher)
-                        .setContentText("Download success")
-                        .build();
+				android.app.Notification notification;
+				notification = mBuilder
+						.setAutoCancel(true)
+						.setContentTitle("Hify_v" + version + ".apk")
+						.setColorized(true)
+						.setContentIntent(pendingIntent)
+						.setColor(Color.parseColor("#2591FC"))
+						.setSmallIcon(R.mipmap.ic_launcher)
+						.setContentText("Download success")
+						.build();
 
-                notificationManager.notify(0, notification);
-                Toasty.success(ctxt, "File downloaded and saved at Downloads/Hify Updates", Toasty.LENGTH_LONG,true).show();
-            }
-        }
+				notificationManager.notify(0, notification);
+				Toasty.success(ctxt, "File downloaded and saved at Downloads/Hify Updates", Toasty.LENGTH_LONG, true).show();
+			}
+		}
 
-    };
-    private DownloadManager downloadManager;
+	};
+	private Button button;
+	private TextView textview;
+	private String link, version, improvements;
+	private long refid;
+	private DownloadManager downloadManager;
 
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
-    }
+	@Override
+	protected void attachBaseContext(Context newBase) {
+		super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
+	}
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 
-        ViewPump.init(ViewPump.builder()
-                .addInterceptor(new CalligraphyInterceptor(
-                        new CalligraphyConfig.Builder()
-                                .setDefaultFontPath("fonts/bold.ttf")
-                                .setFontAttrId(R.attr.fontPath)
-                                .build()))
-                .build());
+		ViewPump.init(ViewPump.builder()
+				.addInterceptor(new CalligraphyInterceptor(
+						new CalligraphyConfig.Builder()
+								.setDefaultFontPath("fonts/bold.ttf")
+								.setFontAttrId(R.attr.fontPath)
+								.build()))
+				.build());
 
-        setContentView(R.layout.activity_update_available);
+		setContentView(R.layout.activity_update_available);
 
-        textview=findViewById(R.id.textView);
-        button=findViewById(R.id.button);
+		textview = findViewById(R.id.textView);
+		button = findViewById(R.id.button);
 
-        link=getIntent().getStringExtra("link");
-        version=getIntent().getStringExtra("version");
-        improvements=getIntent().getStringExtra("improvements");
-        downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+		link = getIntent().getStringExtra("link");
+		version = getIntent().getStringExtra("version");
+		improvements = getIntent().getStringExtra("improvements");
+		downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
 
-        registerReceiver(onComplete,
-                new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+		registerReceiver(onComplete,
+				new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
-        button.setText(String.format(Locale.ENGLISH,"Download v%s", version));
-        textview.setText(improvements);
+		button.setText(String.format(Locale.ENGLISH, "Download v%s", version));
+		textview.setText(improvements);
 
-    }
+	}
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unregisterReceiver(onComplete);
-    }
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		unregisterReceiver(onComplete);
+	}
 
-    public boolean isOnline() {
-        ConnectivityManager cm =
-                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        return netInfo != null && netInfo.isConnectedOrConnecting();
-    }
+	public boolean isOnline() {
+		ConnectivityManager cm =
+				(ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo netInfo = cm.getActiveNetworkInfo();
+		return netInfo != null && netInfo.isConnectedOrConnecting();
+	}
 
-    public void onDownloadClick(View view) {
+	public void onDownloadClick(View view) {
 
-        Dexter.withActivity(this)
-                .withPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                .withListener(new PermissionListener() {
-                    @Override
-                    public void onPermissionGranted(PermissionGrantedResponse response) {
-                        if(isOnline()) {
+		Dexter.withActivity(this)
+				.withPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+				.withListener(new PermissionListener() {
+					@Override
+					public void onPermissionGranted(PermissionGrantedResponse response) {
+						if (isOnline()) {
 
-                            DownloadManager.Request request = new DownloadManager.Request(Uri.parse(link));
-                            request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
-                            request.setAllowedOverRoaming(true);
-                            request.setTitle("Hify");
-                            request.setDescription("Downloading ...");
-                            request.setVisibleInDownloadsUi(true);
-                            request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "/Hify Updates/"+ "Hify_v" + version + ".apk");
+							DownloadManager.Request request = new DownloadManager.Request(Uri.parse(link));
+							request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
+							request.setAllowedOverRoaming(true);
+							request.setTitle("Hify");
+							request.setDescription("Downloading ...");
+							request.setVisibleInDownloadsUi(true);
+							request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "/Hify Updates/" + "Hify_v" + version + ".apk");
 
-                            Toasty.info(UpdateAvailable.this, "Downloading...", Toasty.LENGTH_SHORT,true).show();
+							Toasty.info(UpdateAvailable.this, "Downloading...", Toasty.LENGTH_SHORT, true).show();
 
-                            refid = downloadManager.enqueue(request);
-                            list.add(refid);
+							refid = downloadManager.enqueue(request);
+							list.add(refid);
 
-                        }else{
-                            Toasty.error(UpdateAvailable.this, "No internet connection", Toasty.LENGTH_SHORT,true).show();
-                        }
-                    }
+						} else {
+							Toasty.error(UpdateAvailable.this, "No internet connection", Toasty.LENGTH_SHORT, true).show();
+						}
+					}
 
-                    @Override
-                    public void onPermissionDenied(PermissionDeniedResponse response) {
-                        if(response.isPermanentlyDenied()){
-                            DialogOnDeniedPermissionListener.Builder
-                                    .withContext(UpdateAvailable.this)
-                                    .withTitle("Storage permission")
-                                    .withMessage("Storage permission is needed for downloading update.")
-                                    .withButtonText(android.R.string.ok)
-                                    .build();
-                        }
-                    }
+					@Override
+					public void onPermissionDenied(PermissionDeniedResponse response) {
+						if (response.isPermanentlyDenied()) {
+							DialogOnDeniedPermissionListener.Builder
+									.withContext(UpdateAvailable.this)
+									.withTitle("Storage permission")
+									.withMessage("Storage permission is needed for downloading update.")
+									.withButtonText(android.R.string.ok)
+									.build();
+						}
+					}
 
-                    @Override
-                    public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
+					@Override
+					public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
 
-                    }
-                }).check();
+					}
+				}).check();
 
-    }
+	}
 
 }

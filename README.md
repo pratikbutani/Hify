@@ -134,3 +134,5 @@ If you like to contribute, please let me know
 
 News from newsapi.org <br>
 Logo from www.shutterstock.com
+
+

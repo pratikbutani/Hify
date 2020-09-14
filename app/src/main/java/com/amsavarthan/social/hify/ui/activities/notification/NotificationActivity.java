@@ -39,209 +39,210 @@ import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 
 public class NotificationActivity extends AppCompatActivity {
 
-    private TextView nameTxt, messageTxt;
-    private String msg;
-    private CircleImageView imageView;
+	private TextView nameTxt, messageTxt;
+	private String msg;
+	private CircleImageView imageView;
 
-    private TextView username;
-    private String user_id, current_id;
-    private Button mSend;
-    private EditText message;
-    private FirebaseFirestore mFirestore;
-    private ProgressBar mBar;
+	private TextView username;
+	private String user_id, current_id;
+	private Button mSend;
+	private EditText message;
+	private FirebaseFirestore mFirestore;
+	private ProgressBar mBar;
 
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
-    }
-
-
-    @Override
-    public void finish() {
-        super.finish();
-        overridePendingTransitionExit();
-    }
-
-    @Override
-    public void startActivity(Intent intent) {
-        super.startActivity(intent);
-        overridePendingTransitionEnter();
-    }
-
-    /**
-     * Overrides the pending Activity transition by performing the "Enter" animation.
-     */
-    protected void overridePendingTransitionEnter() {
-        overridePendingTransition(R.anim.slide_from_right, R.anim.slide_to_left);
-    }
-
-    /**
-     * Overrides the pending Activity transition by performing the "Exit" animation.
-     */
-    protected void overridePendingTransitionExit() {
-        overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_right);
-    }
-
-    @Override
-    public boolean onSupportNavigateUp() {
-        onBackPressed();
-        return true;
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+	@Override
+	protected void attachBaseContext(Context newBase) {
+		super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
+	}
 
 
-        ViewPump.init(ViewPump.builder()
-                .addInterceptor(new CalligraphyInterceptor(
-                        new CalligraphyConfig.Builder()
-                                .setDefaultFontPath("fonts/bold.ttf")
-                                .setFontAttrId(R.attr.fontPath)
-                                .build()))
-                .build());
-        setContentView(R.layout.activity_notification);
+	@Override
+	public void finish() {
+		super.finish();
+		overridePendingTransitionExit();
+	}
 
-        Toolbar toolbar=findViewById(R.id.main_toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+	@Override
+	public void startActivity(Intent intent) {
+		super.startActivity(intent);
+		overridePendingTransitionEnter();
+	}
 
-        nameTxt =  findViewById(R.id.name);
-        messageTxt =  findViewById(R.id.messagetxt);
-        imageView =  findViewById(R.id.circleImageView);
+	/**
+	 * Overrides the pending Activity transition by performing the "Enter" animation.
+	 */
+	protected void overridePendingTransitionEnter() {
+		overridePendingTransition(R.anim.slide_from_right, R.anim.slide_to_left);
+	}
 
-        current_id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+	/**
+	 * Overrides the pending Activity transition by performing the "Exit" animation.
+	 */
+	protected void overridePendingTransitionExit() {
+		overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_right);
+	}
 
-        mSend = findViewById(R.id.send);
-        message = findViewById(R.id.message);
-        mBar = findViewById(R.id.progressBar);
+	@Override
+	public boolean onSupportNavigateUp() {
+		onBackPressed();
+		return true;
+	}
 
-        msg = getIntent().getStringExtra("message");
-        user_id = getIntent().getStringExtra("from_id");
-        nameTxt.setText(getIntent().getStringExtra("name"));
-        Glide.with(NotificationActivity.this)
-                .setDefaultRequestOptions(new RequestOptions().placeholder(R.drawable.default_profile_picture))
-                .load(getIntent().getStringExtra("image"))
-                .into(imageView);
-
-        mFirestore = FirebaseFirestore.getInstance();
-
-        mFirestore.collection("Users").document(FirebaseAuth.getInstance().getCurrentUser().getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-
-                String image_ = documentSnapshot.getString("image");
-                CircleImageView imageView=findViewById(R.id.currentProfile);
-
-                Glide.with(NotificationActivity.this)
-                        .setDefaultRequestOptions(new RequestOptions().placeholder(R.drawable.default_profile_picture))
-                        .load(image_)
-                        .into(imageView);
-
-            }
-        }).addOnFailureListener(e -> { });
-
-        mFirestore.collection("Users").document(user_id).get().addOnSuccessListener(documentSnapshot -> {
-
-            String name = documentSnapshot.getString("name");
-            nameTxt.setText(name);
-
-            String image_ = documentSnapshot.getString("image");
-
-            Glide.with(NotificationActivity.this)
-                    .setDefaultRequestOptions(new RequestOptions().placeholder(R.drawable.default_profile_picture))
-                    .load(image_)
-                    .into(imageView);
-
-        }).addOnFailureListener(e -> {
-            imageView.setVisibility(View.GONE);
-            nameTxt.setVisibility(View.GONE);
-        });
-
-        messageTxt.setText(msg);
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 
 
-        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        if (notificationManager != null) {
-            notificationManager.cancel(getIntent().getIntExtra("notification_id", 0));
-        }
+		ViewPump.init(ViewPump.builder()
+				.addInterceptor(new CalligraphyInterceptor(
+						new CalligraphyConfig.Builder()
+								.setDefaultFontPath("fonts/bold.ttf")
+								.setFontAttrId(R.attr.fontPath)
+								.build()))
+				.build());
+		setContentView(R.layout.activity_notification);
 
-        updateReadStatus();
-        initReply();
+		Toolbar toolbar = findViewById(R.id.main_toolbar);
+		setSupportActionBar(toolbar);
+		getSupportActionBar().setDisplayShowHomeEnabled(true);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-    }
+		nameTxt = findViewById(R.id.name);
+		messageTxt = findViewById(R.id.messagetxt);
+		imageView = findViewById(R.id.circleImageView);
 
-    private void updateReadStatus() {
+		current_id = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        String read=getIntent().getStringExtra("read");
-        if(read.equals("false")){
-            Map<String,Object> readMap=new HashMap<>();
-            readMap.put("read","true");
+		mSend = findViewById(R.id.send);
+		message = findViewById(R.id.message);
+		mBar = findViewById(R.id.progressBar);
 
-            mFirestore.collection("Users").document(current_id).collection("Notifications")
-                    .document(getIntent().getStringExtra("doc_id")).update(readMap).addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void aVoid) {
-                    Log.i("done","read:true");
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Log.i("error","read:false::"+e.getLocalizedMessage());
-                }
-            });
-        }
+		msg = getIntent().getStringExtra("message");
+		user_id = getIntent().getStringExtra("from_id");
+		nameTxt.setText(getIntent().getStringExtra("name"));
+		Glide.with(NotificationActivity.this)
+				.setDefaultRequestOptions(new RequestOptions().placeholder(R.drawable.default_profile_picture))
+				.load(getIntent().getStringExtra("image"))
+				.into(imageView);
 
-    }
+		mFirestore = FirebaseFirestore.getInstance();
+
+		mFirestore.collection("Users").document(FirebaseAuth.getInstance().getCurrentUser().getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+			@Override
+			public void onSuccess(DocumentSnapshot documentSnapshot) {
+
+				String image_ = documentSnapshot.getString("image");
+				CircleImageView imageView = findViewById(R.id.currentProfile);
+
+				Glide.with(NotificationActivity.this)
+						.setDefaultRequestOptions(new RequestOptions().placeholder(R.drawable.default_profile_picture))
+						.load(image_)
+						.into(imageView);
+
+			}
+		}).addOnFailureListener(e -> {
+		});
+
+		mFirestore.collection("Users").document(user_id).get().addOnSuccessListener(documentSnapshot -> {
+
+			String name = documentSnapshot.getString("name");
+			nameTxt.setText(name);
+
+			String image_ = documentSnapshot.getString("image");
+
+			Glide.with(NotificationActivity.this)
+					.setDefaultRequestOptions(new RequestOptions().placeholder(R.drawable.default_profile_picture))
+					.load(image_)
+					.into(imageView);
+
+		}).addOnFailureListener(e -> {
+			imageView.setVisibility(View.GONE);
+			nameTxt.setVisibility(View.GONE);
+		});
+
+		messageTxt.setText(msg);
 
 
-    private void initReply() {
+		NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+		if (notificationManager != null) {
+			notificationManager.cancel(getIntent().getIntExtra("notification_id", 0));
+		}
 
-        mSend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+		updateReadStatus();
+		initReply();
 
-                String message_ = message.getText().toString();
+	}
 
-                if (!TextUtils.isEmpty(message_)) {
-                    mBar.setVisibility(View.VISIBLE);
-                    Map<String, Object> notificationMessage = new HashMap<>();
-                    notificationMessage.put("reply_for", msg);
-                    notificationMessage.put("message", message_);
-                    notificationMessage.put("from", current_id);
-                    notificationMessage.put("notification_id", String.valueOf(System.currentTimeMillis()));
-                    notificationMessage.put("timestamp", String.valueOf(System.currentTimeMillis()));
+	private void updateReadStatus() {
 
-                    mFirestore.collection("Users/" + user_id + "/Notifications_reply").add(notificationMessage).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                        @Override
-                        public void onSuccess(DocumentReference documentReference) {
+		String read = getIntent().getStringExtra("read");
+		if (read.equals("false")) {
+			Map<String, Object> readMap = new HashMap<>();
+			readMap.put("read", "true");
 
-                            Toasty.success(NotificationActivity.this, "Hify sent!", Toasty.LENGTH_SHORT,true).show();
-                            message.setText("");
-                            mBar.setVisibility(View.GONE);
-                            finish();
+			mFirestore.collection("Users").document(current_id).collection("Notifications")
+					.document(getIntent().getStringExtra("doc_id")).update(readMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+				@Override
+				public void onSuccess(Void aVoid) {
+					Log.i("done", "read:true");
+				}
+			}).addOnFailureListener(new OnFailureListener() {
+				@Override
+				public void onFailure(@NonNull Exception e) {
+					Log.i("error", "read:false::" + e.getLocalizedMessage());
+				}
+			});
+		}
 
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toasty.error(NotificationActivity.this, "Error : " + e.getMessage(), Toasty.LENGTH_SHORT,true).show();
-                            mBar.setVisibility(View.GONE);
-                        }
-                    });
+	}
 
-                }
 
-            }
-        });
+	private void initReply() {
 
-    }
+		mSend.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
 
-    public void SendNew(View view) {
+				String message_ = message.getText().toString();
 
-        SendActivity.startActivityExtra(NotificationActivity.this, user_id);
-        overridePendingTransitionExit();
+				if (!TextUtils.isEmpty(message_)) {
+					mBar.setVisibility(View.VISIBLE);
+					Map<String, Object> notificationMessage = new HashMap<>();
+					notificationMessage.put("reply_for", msg);
+					notificationMessage.put("message", message_);
+					notificationMessage.put("from", current_id);
+					notificationMessage.put("notification_id", String.valueOf(System.currentTimeMillis()));
+					notificationMessage.put("timestamp", String.valueOf(System.currentTimeMillis()));
 
-    }
+					mFirestore.collection("Users/" + user_id + "/Notifications_reply").add(notificationMessage).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+						@Override
+						public void onSuccess(DocumentReference documentReference) {
+
+							Toasty.success(NotificationActivity.this, "Hify sent!", Toasty.LENGTH_SHORT, true).show();
+							message.setText("");
+							mBar.setVisibility(View.GONE);
+							finish();
+
+						}
+					}).addOnFailureListener(new OnFailureListener() {
+						@Override
+						public void onFailure(@NonNull Exception e) {
+							Toasty.error(NotificationActivity.this, "Error : " + e.getMessage(), Toasty.LENGTH_SHORT, true).show();
+							mBar.setVisibility(View.GONE);
+						}
+					});
+
+				}
+
+			}
+		});
+
+	}
+
+	public void SendNew(View view) {
+
+		SendActivity.startActivityExtra(NotificationActivity.this, user_id);
+		overridePendingTransitionExit();
+
+	}
 }

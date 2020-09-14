@@ -14,10 +14,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-
 import com.amsavarthan.social.hify.R;
-import com.amsavarthan.social.hify.ui.activities.forum.AnswersActivity;
 import com.amsavarthan.social.hify.models.AllQuestionsModel;
+import com.amsavarthan.social.hify.ui.activities.forum.AnswersActivity;
 import com.github.marlonlom.utilities.timeago.TimeAgo;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -28,111 +27,110 @@ import java.util.Map;
 
 import es.dmoral.toasty.Toasty;
 
-import static android.content.Context.MODE_PRIVATE;
-
 public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHolder> {
 
-    private List<AllQuestionsModel> allQuestionsModels;
-    private Context context;
+	private List<AllQuestionsModel> allQuestionsModels;
+	private Context context;
 
-    public QuestionAdapter(List<AllQuestionsModel> unanswereds) {
-        this.allQuestionsModels = unanswereds;
-    }
+	public QuestionAdapter(List<AllQuestionsModel> unanswereds) {
+		this.allQuestionsModels = unanswereds;
+	}
 
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
+	@Override
+	public long getItemId(int position) {
+		return position;
+	}
 
-    @Override
-    public int getItemViewType(int position) {
-        return position;
-    }
+	@Override
+	public int getItemViewType(int position) {
+		return position;
+	}
 
 
-    @NonNull
-    @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        context=parent.getContext();
-        View view= LayoutInflater.from(context).inflate(R.layout.item_question,parent,false);
-        return new ViewHolder(view);    }
+	@NonNull
+	@Override
+	public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+		context = parent.getContext();
+		View view = LayoutInflater.from(context).inflate(R.layout.item_question, parent, false);
+		return new ViewHolder(view);
+	}
 
-    @Override
-    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
+	@Override
+	public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
 
-        AllQuestionsModel allQuestionsModel = allQuestionsModels.get(holder.getAdapterPosition());
+		AllQuestionsModel allQuestionsModel = allQuestionsModels.get(holder.getAdapterPosition());
 
-        if(allQuestionsModel.getId().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
+		if (allQuestionsModel.getId().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
 
-            holder.item.setOnLongClickListener(v -> {
-                new MaterialDialog.Builder(context)
-                        .title("Delete")
-                        .content("Are you sure do you want to delete this question?")
-                        .positiveText("Yes")
-                        .negativeText("No")
-                        .onPositive((dialog, which) -> {
-                            dialog.dismiss();
+			holder.item.setOnLongClickListener(v -> {
+				new MaterialDialog.Builder(context)
+						.title("Delete")
+						.content("Are you sure do you want to delete this question?")
+						.positiveText("Yes")
+						.negativeText("No")
+						.onPositive((dialog, which) -> {
+							dialog.dismiss();
 
-                            final ProgressDialog mDialog=new ProgressDialog(context);
-                            mDialog.setMessage("Please wait....");
-                            mDialog.setIndeterminate(true);
-                            mDialog.setCancelable(false);
-                            mDialog.setCanceledOnTouchOutside(false);
-                            mDialog.show();
+							final ProgressDialog mDialog = new ProgressDialog(context);
+							mDialog.setMessage("Please wait....");
+							mDialog.setIndeterminate(true);
+							mDialog.setCancelable(false);
+							mDialog.setCanceledOnTouchOutside(false);
+							mDialog.show();
 
-                            FirebaseFirestore.getInstance().collection("Questions")
-                                    .document(allQuestionsModel.question_doc_id)
-                                    .delete().addOnSuccessListener(aVoid -> {
-                                        mDialog.dismiss();
-                                        allQuestionsModels.remove(holder.getAdapterPosition());
-                                        Toasty.success(context, "Question Deleted", Toasty.LENGTH_SHORT, true).show();
-                                        notifyDataSetChanged();
-                                    })
-                                    .addOnFailureListener(e -> {
-                                        mDialog.dismiss();
-                                        Log.e("Error",e.getLocalizedMessage());
-                                    });
+							FirebaseFirestore.getInstance().collection("Questions")
+									.document(allQuestionsModel.question_doc_id)
+									.delete().addOnSuccessListener(aVoid -> {
+								mDialog.dismiss();
+								allQuestionsModels.remove(holder.getAdapterPosition());
+								Toasty.success(context, "Question Deleted", Toasty.LENGTH_SHORT, true).show();
+								notifyDataSetChanged();
+							})
+									.addOnFailureListener(e -> {
+										mDialog.dismiss();
+										Log.e("Error", e.getLocalizedMessage());
+									});
 
-                        })
-                        .onNegative((dialog, which) -> dialog.dismiss())
-                        .show();
-                return false;
-            });
+						})
+						.onNegative((dialog, which) -> dialog.dismiss())
+						.show();
+				return false;
+			});
 
-        }
+		}
 
-        holder.question.setText(allQuestionsModel.getQuestion());
-        holder.timestamp.setText(TimeAgo.using(Long.parseLong(allQuestionsModel.getTimestamp())));
+		holder.question.setText(allQuestionsModel.getQuestion());
+		holder.timestamp.setText(TimeAgo.using(Long.parseLong(allQuestionsModel.getTimestamp())));
 
-        if(TextUtils.isEmpty(allQuestionsModel.getAnswered_by())||allQuestionsModel.getAnswered_by().equals("")){
-            holder.answered_by.setVisibility(View.GONE);
-        }else{
-            holder.answered_by.setText(allQuestionsModel.getAnswered_by());
-        }
+		if (TextUtils.isEmpty(allQuestionsModel.getAnswered_by()) || allQuestionsModel.getAnswered_by().equals("")) {
+			holder.answered_by.setVisibility(View.GONE);
+		} else {
+			holder.answered_by.setText(allQuestionsModel.getAnswered_by());
+		}
 
-        holder.subject.setText(String.format(" %s ", allQuestionsModel.getSubject()));
-        holder.author.setText(String.format(" %s ", allQuestionsModel.getName()));
+		holder.subject.setText(String.format(" %s ", allQuestionsModel.getSubject()));
+		holder.author.setText(String.format(" %s ", allQuestionsModel.getName()));
 
-        FirebaseFirestore.getInstance().collection("Users")
-                .document(allQuestionsModel.getId())
-                .get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    try {
-                        if (!documentSnapshot.getString("name").equals(allQuestionsModel.getName())) {
+		FirebaseFirestore.getInstance().collection("Users")
+				.document(allQuestionsModel.getId())
+				.get()
+				.addOnSuccessListener(documentSnapshot -> {
+					try {
+						if (!documentSnapshot.getString("name").equals(allQuestionsModel.getName())) {
 
-                            Map<String, Object> map = new HashMap<>();
-                            map.put("name", documentSnapshot.getString("name"));
+							Map<String, Object> map = new HashMap<>();
+							map.put("name", documentSnapshot.getString("name"));
 
-                            FirebaseFirestore.getInstance().collection("Answers")
-                                    .document(allQuestionsModel.question_doc_id)
-                                    .update(map)
-                                    .addOnSuccessListener(aVoid -> holder.author.setText(String.format(" %s ", documentSnapshot.getString("name"))));
+							FirebaseFirestore.getInstance().collection("Answers")
+									.document(allQuestionsModel.question_doc_id)
+									.update(map)
+									.addOnSuccessListener(aVoid -> holder.author.setText(String.format(" %s ", documentSnapshot.getString("name"))));
 
-                        }
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
-                });
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				});
 
         /*holder.item.setOnClickListener(v -> context.startActivity(new Intent(context, AnswersActivity.class)
                 .putExtra("answered_by", allQuestionsModels.get(holder.getAdapterPosition()).getAnswered_by())
@@ -142,31 +140,31 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
                 .putExtra("question", allQuestionsModels.get(holder.getAdapterPosition()).getQuestion())
                 .putExtra("timestamp", allQuestionsModels.get(holder.getAdapterPosition()).getTimestamp())));*/
 
-        holder.item.setOnClickListener(v -> AnswersActivity.startActivity(context,allQuestionsModel.question_doc_id));
+		holder.item.setOnClickListener(v -> AnswersActivity.startActivity(context, allQuestionsModel.question_doc_id));
 
-    }
+	}
 
-    @Override
-    public int getItemCount() {
-        return allQuestionsModels.size();
-    }
+	@Override
+	public int getItemCount() {
+		return allQuestionsModels.size();
+	}
 
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+	public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView question,timestamp,author,subject,answered_by;
-        LinearLayout item;
+		TextView question, timestamp, author, subject, answered_by;
+		LinearLayout item;
 
-        ViewHolder(View itemView) {
-            super(itemView);
+		ViewHolder(View itemView) {
+			super(itemView);
 
-            item=itemView.findViewById(R.id.layout);
-            question=itemView.findViewById(R.id.question);
-            timestamp=itemView.findViewById(R.id.timestamp);
-            author=itemView.findViewById(R.id.author);
-            subject=itemView.findViewById(R.id.subject);
-            answered_by=itemView.findViewById(R.id.answered_by);
+			item = itemView.findViewById(R.id.layout);
+			question = itemView.findViewById(R.id.question);
+			timestamp = itemView.findViewById(R.id.timestamp);
+			author = itemView.findViewById(R.id.author);
+			subject = itemView.findViewById(R.id.subject);
+			answered_by = itemView.findViewById(R.id.answered_by);
 
-        }
-    }
+		}
+	}
 }

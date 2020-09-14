@@ -1,8 +1,6 @@
 package com.amsavarthan.social.hify.ui.activities.account;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -48,194 +46,195 @@ import static androidx.recyclerview.widget.RecyclerView.VERTICAL;
 
 public class Notifications extends AppCompatActivity {
 
-    private List<Notification> notificationsList;
-    private NotificationsAdapter notificationsAdapter;
-    private RecyclerView mRecyclerView;
-    private SwipeRefreshLayout refreshLayout;
+	private List<Notification> notificationsList;
+	private NotificationsAdapter notificationsAdapter;
+	private RecyclerView mRecyclerView;
+	private SwipeRefreshLayout refreshLayout;
 
-    public void getNotifications() {
+	public void getNotifications() {
 
-        findViewById(R.id.default_item).setVisibility(View.GONE);
-        notificationsList.clear();
-        refreshLayout.setRefreshing(true);
-        FirebaseFirestore.getInstance().collection("Users")
-                .document(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .collection("Info_Notifications")
-                .orderBy("timestamp", Query.Direction.DESCENDING)
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
+		findViewById(R.id.default_item).setVisibility(View.GONE);
+		notificationsList.clear();
+		refreshLayout.setRefreshing(true);
+		FirebaseFirestore.getInstance().collection("Users")
+				.document(FirebaseAuth.getInstance().getCurrentUser().getUid())
+				.collection("Info_Notifications")
+				.orderBy("timestamp", Query.Direction.DESCENDING)
+				.get()
+				.addOnSuccessListener(queryDocumentSnapshots -> {
 
-                    getSharedPreferences("Notifications",MODE_PRIVATE).edit().putInt("count",queryDocumentSnapshots.size()).apply();
+					getSharedPreferences("Notifications", MODE_PRIVATE).edit().putInt("count", queryDocumentSnapshots.size()).apply();
 
-                    if(!queryDocumentSnapshots.isEmpty()){
+					if (!queryDocumentSnapshots.isEmpty()) {
 
-                        for(DocumentChange documentChange:queryDocumentSnapshots.getDocumentChanges()){
+						for (DocumentChange documentChange : queryDocumentSnapshots.getDocumentChanges()) {
 
-                            if(documentChange.getType()== DocumentChange.Type.ADDED){
+							if (documentChange.getType() == DocumentChange.Type.ADDED) {
 
-                                refreshLayout.setRefreshing(false);
-                                Notification notification=documentChange.getDocument().toObject(Notification.class).withId(documentChange.getDocument().getId());
-                                notificationsList.add(notification);
-                                notificationsAdapter.notifyDataSetChanged();
+								refreshLayout.setRefreshing(false);
+								Notification notification = documentChange.getDocument().toObject(Notification.class).withId(documentChange.getDocument().getId());
+								notificationsList.add(notification);
+								notificationsAdapter.notifyDataSetChanged();
 
-                            }
+							}
 
-                        }
+						}
 
-                        if(notificationsList.size()==0){
-                            refreshLayout.setRefreshing(false);
-                            findViewById(R.id.default_item).setVisibility(View.VISIBLE);
-                        }
+						if (notificationsList.size() == 0) {
+							refreshLayout.setRefreshing(false);
+							findViewById(R.id.default_item).setVisibility(View.VISIBLE);
+						}
 
-                    }else{
-                        refreshLayout.setRefreshing(false);
-                        findViewById(R.id.default_item).setVisibility(View.VISIBLE);
-                    }
+					} else {
+						refreshLayout.setRefreshing(false);
+						findViewById(R.id.default_item).setVisibility(View.VISIBLE);
+					}
 
-                })
-                .addOnFailureListener(e -> {
-                    refreshLayout.setRefreshing(false);
-                    e.printStackTrace();
-                });
+				})
+				.addOnFailureListener(e -> {
+					refreshLayout.setRefreshing(false);
+					e.printStackTrace();
+				});
 
-    }
+	}
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.menu_notifications, menu);
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater menuInflater = getMenuInflater();
+		menuInflater.inflate(R.menu.menu_notifications, menu);
 
-        return super.onCreateOptionsMenu(menu);    }
+		return super.onCreateOptionsMenu(menu);
+	}
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_clear:
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+			case R.id.action_clear:
 
-                new DialogSheet(this)
-                        .setTitle("Clear all")
-                        .setMessage("Are you sure do you want to clear all notifications?")
-                        .setRoundedCorners(true)
-                        .setColoredNavigationBar(true)
-                        .setCancelable(true)
-                        .setPositiveButton("Yes", v -> {
+				new DialogSheet(this)
+						.setTitle("Clear all")
+						.setMessage("Are you sure do you want to clear all notifications?")
+						.setRoundedCorners(true)
+						.setColoredNavigationBar(true)
+						.setCancelable(true)
+						.setPositiveButton("Yes", v -> {
 
-                            deleteAll();
+							deleteAll();
 
-                        })
-                        .setNegativeButton("No", v -> {
+						})
+						.setNegativeButton("No", v -> {
 
-                        })
-                        .show();
+						})
+						.show();
 
-               return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
+				return true;
+			default:
+				return super.onOptionsItemSelected(item);
+		}
+	}
 
-    private void deleteAll() {
-
-
-        refreshLayout.setRefreshing(true);
-        FirebaseFirestore.getInstance().collection("Users")
-                .document(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .collection("Info_Notifications")
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-
-                        if(!queryDocumentSnapshots.isEmpty()){
-
-                            for(DocumentChange documentChange:queryDocumentSnapshots.getDocumentChanges()){
-
-                                refreshLayout.setRefreshing(true);
-                                FirebaseFirestore.getInstance().collection("Users")
-                                        .document(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                        .collection("Info_Notifications")
-                                        .document(documentChange.getDocument().getId())
-                                        .delete()
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                refreshLayout.setRefreshing(false);
-                                            }
-                                        })
-                                        .addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                e.printStackTrace();
-                                            }
-                                        });
-
-                            }
-
-                            notificationsList.clear();
-                            findViewById(R.id.default_item).setVisibility(View.VISIBLE);
-                            Toasty.success(getApplicationContext(),"Notifications cleared",Toasty.LENGTH_SHORT,true).show();
+	private void deleteAll() {
 
 
-                        }else{
-                            findViewById(R.id.default_item).setVisibility(View.VISIBLE);
-                            refreshLayout.setRefreshing(false);
-                        }
+		refreshLayout.setRefreshing(true);
+		FirebaseFirestore.getInstance().collection("Users")
+				.document(FirebaseAuth.getInstance().getCurrentUser().getUid())
+				.collection("Info_Notifications")
+				.get()
+				.addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+					@Override
+					public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
 
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        refreshLayout.setRefreshing(false);
-                        e.printStackTrace();
-                    }
-                });
+						if (!queryDocumentSnapshots.isEmpty()) {
 
-    }
+							for (DocumentChange documentChange : queryDocumentSnapshots.getDocumentChanges()) {
 
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
-    }
+								refreshLayout.setRefreshing(true);
+								FirebaseFirestore.getInstance().collection("Users")
+										.document(FirebaseAuth.getInstance().getCurrentUser().getUid())
+										.collection("Info_Notifications")
+										.document(documentChange.getDocument().getId())
+										.delete()
+										.addOnSuccessListener(new OnSuccessListener<Void>() {
+											@Override
+											public void onSuccess(Void aVoid) {
+												refreshLayout.setRefreshing(false);
+											}
+										})
+										.addOnFailureListener(new OnFailureListener() {
+											@Override
+											public void onFailure(@NonNull Exception e) {
+												e.printStackTrace();
+											}
+										});
 
-    @Override
-    public boolean onSupportNavigateUp() {
-        onBackPressed();
-        return true;
-    }
+							}
 
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        ViewPump.init(ViewPump.builder()
-                .addInterceptor(new CalligraphyInterceptor(
-                        new CalligraphyConfig.Builder()
-                                .setDefaultFontPath("fonts/bold.ttf")
-                                .setFontAttrId(R.attr.fontPath)
-                                .build()))
-                .build());
-        setContentView(R.layout.activity_notifications);
+							notificationsList.clear();
+							findViewById(R.id.default_item).setVisibility(View.VISIBLE);
+							Toasty.success(getApplicationContext(), "Notifications cleared", Toasty.LENGTH_SHORT, true).show();
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        mRecyclerView = findViewById(R.id.recyclerView);
-        refreshLayout=findViewById(R.id.refreshLayout);
+						} else {
+							findViewById(R.id.default_item).setVisibility(View.VISIBLE);
+							refreshLayout.setRefreshing(false);
+						}
 
-        notificationsList = new ArrayList<>();
-        notificationsAdapter = new NotificationsAdapter(notificationsList, this);
+					}
+				})
+				.addOnFailureListener(new OnFailureListener() {
+					@Override
+					public void onFailure(@NonNull Exception e) {
+						refreshLayout.setRefreshing(false);
+						e.printStackTrace();
+					}
+				});
 
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this, VERTICAL, false));
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setAdapter(notificationsAdapter);
+	}
 
-        refreshLayout.setOnRefreshListener(() -> getNotifications());
+	@Override
+	protected void attachBaseContext(Context newBase) {
+		super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
+	}
 
-        getNotifications();
+	@Override
+	public boolean onSupportNavigateUp() {
+		onBackPressed();
+		return true;
+	}
 
-    }
+	@Override
+	protected void onCreate(@Nullable Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		ViewPump.init(ViewPump.builder()
+				.addInterceptor(new CalligraphyInterceptor(
+						new CalligraphyConfig.Builder()
+								.setDefaultFontPath("fonts/bold.ttf")
+								.setFontAttrId(R.attr.fontPath)
+								.build()))
+				.build());
+		setContentView(R.layout.activity_notifications);
+
+		Toolbar toolbar = findViewById(R.id.toolbar);
+		setSupportActionBar(toolbar);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+		mRecyclerView = findViewById(R.id.recyclerView);
+		refreshLayout = findViewById(R.id.refreshLayout);
+
+		notificationsList = new ArrayList<>();
+		notificationsAdapter = new NotificationsAdapter(notificationsList, this);
+
+		mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+		mRecyclerView.setLayoutManager(new LinearLayoutManager(this, VERTICAL, false));
+		mRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+		mRecyclerView.setHasFixedSize(true);
+		mRecyclerView.setAdapter(notificationsAdapter);
+
+		refreshLayout.setOnRefreshListener(() -> getNotifications());
+
+		getNotifications();
+
+	}
 }

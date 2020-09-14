@@ -26,108 +26,106 @@ import com.bumptech.glide.request.target.Target;
 
 import java.util.List;
 
-import static android.content.Context.MODE_PRIVATE;
+
+public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
+
+	private List<Article> articles;
+	private Context context;
+	private OnItemClickListener onItemClickListener;
 
 
-public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder>{
+	public Adapter(List<Article> articles, Context context) {
+		this.articles = articles;
+		this.context = context;
+	}
 
-    private List<Article> articles;
-    private Context context;
-    private OnItemClickListener onItemClickListener;
+	@NonNull
+	@Override
+	public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+		View view = LayoutInflater.from(context).inflate(R.layout.item_discover, parent, false);
+		return new MyViewHolder(view, onItemClickListener);
+	}
 
+	@Override
+	public void onBindViewHolder(@NonNull MyViewHolder holders, int position) {
+		final MyViewHolder holder = holders;
+		Article model = articles.get(position);
 
-    public Adapter(List<Article> articles, Context context) {
-        this.articles = articles;
-        this.context = context;
-    }
+		RequestOptions requestOptions = new RequestOptions()
+				.placeholder(Utils.getRandomDrawbleColor())
+				.error(Utils.getRandomDrawbleColor())
+				.diskCacheStrategy(DiskCacheStrategy.ALL)
+				.centerCrop();
 
-    @NonNull
-    @Override
-    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view= LayoutInflater.from(context).inflate(R.layout.item_discover,parent,false);
-        return new MyViewHolder(view, onItemClickListener);
-    }
+		Glide.with(context)
+				.load(model.getUrlToImage())
+				.apply(requestOptions)
+				.listener(new RequestListener<Drawable>() {
+					@Override
+					public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+						holder.progressBar.setVisibility(View.GONE);
+						return false;
+					}
 
-    @Override
-    public void onBindViewHolder(@NonNull MyViewHolder holders, int position) {
-        final MyViewHolder holder = holders;
-        Article model = articles.get(position);
+					@Override
+					public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+						holder.progressBar.setVisibility(View.GONE);
+						return false;
+					}
+				})
+				.transition(DrawableTransitionOptions.withCrossFade())
+				.into(holder.imageView);
 
-        RequestOptions requestOptions = new RequestOptions()
-                .placeholder(Utils.getRandomDrawbleColor())
-                .error(Utils.getRandomDrawbleColor())
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .centerCrop();
+		holder.title.setText(model.getTitle());
+		holder.desc.setText(model.getDescription());
+		holder.source.setText(model.getSource().getName());
+		holder.time.setText(String.format(" • %s", Utils.DateToTimeFormat(model.getPublishedAt())));
+		holder.published_ad.setText(Utils.DateFormat(model.getPublishedAt()));
+		holder.author.setText(model.getAuthor());
 
-        Glide.with(context)
-                .load(model.getUrlToImage())
-                .apply(requestOptions)
-                .listener(new RequestListener<Drawable>() {
-                    @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                        holder.progressBar.setVisibility(View.GONE);
-                        return false;
-                    }
+	}
 
-                    @Override
-                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        holder.progressBar.setVisibility(View.GONE);
-                        return false;
-                    }
-                })
-                .transition(DrawableTransitionOptions.withCrossFade())
-                .into(holder.imageView);
+	@Override
+	public int getItemCount() {
+		return articles.size();
+	}
 
-        holder.title.setText(model.getTitle());
-        holder.desc.setText(model.getDescription());
-        holder.source.setText(model.getSource().getName());
-        holder.time.setText(String.format(" • %s", Utils.DateToTimeFormat(model.getPublishedAt())));
-        holder.published_ad.setText(Utils.DateFormat(model.getPublishedAt()));
-        holder.author.setText(model.getAuthor());
+	public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+		this.onItemClickListener = onItemClickListener;
+	}
 
-    }
+	public interface OnItemClickListener {
+		void onItemClick(View view, int position);
+	}
 
-    @Override
-    public int getItemCount() {
-        return articles.size();
-    }
+	public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-    public void setOnItemClickListener(OnItemClickListener onItemClickListener){
-        this.onItemClickListener = onItemClickListener;
-    }
+		TextView title, desc, author, published_ad, source, time;
+		ImageView imageView;
+		ProgressBar progressBar;
+		OnItemClickListener onItemClickListener;
 
-    public interface OnItemClickListener {
-        void onItemClick(View view, int position);
-    }
+		public MyViewHolder(View itemView, OnItemClickListener onItemClickListener) {
 
-    public class MyViewHolder extends RecyclerView.ViewHolder implements  View.OnClickListener {
+			super(itemView);
 
-        TextView title, desc, author, published_ad, source, time;
-        ImageView imageView;
-        ProgressBar progressBar;
-        OnItemClickListener onItemClickListener;
+			itemView.setOnClickListener(this);
+			title = itemView.findViewById(R.id.title);
+			desc = itemView.findViewById(R.id.desc);
+			author = itemView.findViewById(R.id.author);
+			published_ad = itemView.findViewById(R.id.publishedAt);
+			source = itemView.findViewById(R.id.source);
+			time = itemView.findViewById(R.id.time);
+			imageView = itemView.findViewById(R.id.img);
+			progressBar = itemView.findViewById(R.id.prograss_load_photo);
 
-        public MyViewHolder(View itemView, OnItemClickListener onItemClickListener) {
+			this.onItemClickListener = onItemClickListener;
 
-            super(itemView);
+		}
 
-            itemView.setOnClickListener(this);
-            title = itemView.findViewById(R.id.title);
-            desc = itemView.findViewById(R.id.desc);
-            author = itemView.findViewById(R.id.author);
-            published_ad = itemView.findViewById(R.id.publishedAt);
-            source = itemView.findViewById(R.id.source);
-            time = itemView.findViewById(R.id.time);
-            imageView = itemView.findViewById(R.id.img);
-            progressBar = itemView.findViewById(R.id.prograss_load_photo);
-
-            this.onItemClickListener = onItemClickListener;
-
-        }
-
-        @Override
-        public void onClick(View v) {
-            onItemClickListener.onItemClick(v, getAdapterPosition());
-        }
-    }
+		@Override
+		public void onClick(View v) {
+			onItemClickListener.onItemClick(v, getAdapterPosition());
+		}
+	}
 }

@@ -32,158 +32,158 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class FriendRequestAdapter extends RecyclerView.Adapter<FriendRequestAdapter.ViewHolder> {
 
-    private Context context;
-    private List<FriendRequest> usersList;
+	private Context context;
+	private List<FriendRequest> usersList;
 
-    public FriendRequestAdapter(List<FriendRequest> usersList, Context context) {
-        this.usersList = usersList;
-        this.context = context;
-    }
+	public FriendRequestAdapter(List<FriendRequest> usersList, Context context) {
+		this.usersList = usersList;
+		this.context = context;
+	}
 
 	@Override
-    public long getItemId(int position) {
-        return position;
-    }
+	public long getItemId(int position) {
+		return position;
+	}
 
-    @Override
-    public int getItemViewType(int position) {
-        return position;
-    }
-	
-    @NonNull
-    @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view=LayoutInflater.from(context).inflate(R.layout.item_friend_req,parent,false);
-        return new ViewHolder(view);
-    }
+	@Override
+	public int getItemViewType(int position) {
+		return position;
+	}
 
-    @Override
-    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
+	@NonNull
+	@Override
+	public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+		View view = LayoutInflater.from(context).inflate(R.layout.item_friend_req, parent, false);
+		return new ViewHolder(view);
+	}
 
-        holder.name.setText(usersList.get(position).getName());
+	@Override
+	public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
 
-        Glide.with(context)
-                .setDefaultRequestOptions(new RequestOptions().placeholder(R.drawable.default_profile_picture))
-                .load(usersList.get(position).getImage())
-                .into(holder.image);
+		holder.name.setText(usersList.get(position).getName());
 
-        String timeAgo = TimeAgo.using(Long.parseLong(usersList.get(position).getTimestamp()));
-        holder.timestamp.setText(timeAgo);
+		Glide.with(context)
+				.setDefaultRequestOptions(new RequestOptions().placeholder(R.drawable.default_profile_picture))
+				.load(usersList.get(position).getImage())
+				.into(holder.image);
 
-        try {
-            FirebaseFirestore.getInstance().collection("Users")
-                    .document(usersList.get(position).userId)
-                    .get()
-                    .addOnSuccessListener(documentSnapshot -> {
+		String timeAgo = TimeAgo.using(Long.parseLong(usersList.get(position).getTimestamp()));
+		holder.timestamp.setText(timeAgo);
 
-                        final String mCurrentId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+		try {
+			FirebaseFirestore.getInstance().collection("Users")
+					.document(usersList.get(position).userId)
+					.get()
+					.addOnSuccessListener(documentSnapshot -> {
 
-                        if (!documentSnapshot.getString("name").equals(usersList.get(holder.getAdapterPosition()).getName()) &&
-                                !documentSnapshot.getString("image").equals(usersList.get(holder.getAdapterPosition()).getImage())) {
+						final String mCurrentId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-                            holder.mBar.setVisibility(View.VISIBLE);
-                            Map<String, Object> user = new HashMap<>();
-                            user.put("name", documentSnapshot.getString("name"));
-                            user.put("image", documentSnapshot.getString("image"));
+						if (!documentSnapshot.getString("name").equals(usersList.get(holder.getAdapterPosition()).getName()) &&
+								!documentSnapshot.getString("image").equals(usersList.get(holder.getAdapterPosition()).getImage())) {
 
-                            FirebaseFirestore.getInstance()
-                                    .collection("Users")
-                                    .document(mCurrentId)
-                                    .collection("Friend_Requests")
-                                    .document(documentSnapshot.getString("id"))
-                                    .update(user)
-                                    .addOnSuccessListener(aVoid -> {
-                                        Log.i("friend_req_update", "success");
-                                        holder.mBar.setVisibility(View.GONE);
-                                    })
-                                    .addOnFailureListener(e -> Log.i("friend_req_update", "failure"));
+							holder.mBar.setVisibility(View.VISIBLE);
+							Map<String, Object> user = new HashMap<>();
+							user.put("name", documentSnapshot.getString("name"));
+							user.put("image", documentSnapshot.getString("image"));
 
-                            holder.name.setText(documentSnapshot.getString("name"));
+							FirebaseFirestore.getInstance()
+									.collection("Users")
+									.document(mCurrentId)
+									.collection("Friend_Requests")
+									.document(documentSnapshot.getString("id"))
+									.update(user)
+									.addOnSuccessListener(aVoid -> {
+										Log.i("friend_req_update", "success");
+										holder.mBar.setVisibility(View.GONE);
+									})
+									.addOnFailureListener(e -> Log.i("friend_req_update", "failure"));
 
-                            Glide.with(context)
-                                    .setDefaultRequestOptions(new RequestOptions().placeholder(R.drawable.default_profile_picture))
-                                    .load(documentSnapshot.getString("image"))
-                                    .into(holder.image);
+							holder.name.setText(documentSnapshot.getString("name"));
 
-
-                        } else if (!documentSnapshot.getString("name").equals(usersList.get(holder.getAdapterPosition()).getName())) {
-
-                            holder.mBar.setVisibility(View.VISIBLE);
-                            Map<String, Object> user = new HashMap<>();
-                            user.put("name", documentSnapshot.getString("name"));
-
-                            FirebaseFirestore.getInstance()
-                                    .collection("Users")
-                                    .document(mCurrentId)
-                                    .collection("Friend_Requests")
-                                    .document(documentSnapshot.getString("id"))
-                                    .update(user)
-                                    .addOnSuccessListener(aVoid -> {
-                                        Log.i("friend_req_update", "success");
-                                        holder.mBar.setVisibility(View.GONE);
-                                    })
-                                    .addOnFailureListener(e -> Log.i("friend_req_update", "failure"));
+							Glide.with(context)
+									.setDefaultRequestOptions(new RequestOptions().placeholder(R.drawable.default_profile_picture))
+									.load(documentSnapshot.getString("image"))
+									.into(holder.image);
 
 
-                            holder.name.setText(documentSnapshot.getString("name"));
+						} else if (!documentSnapshot.getString("name").equals(usersList.get(holder.getAdapterPosition()).getName())) {
 
-                        } else if (!documentSnapshot.getString("image").equals(usersList.get(holder.getAdapterPosition()).getImage())) {
+							holder.mBar.setVisibility(View.VISIBLE);
+							Map<String, Object> user = new HashMap<>();
+							user.put("name", documentSnapshot.getString("name"));
 
-                            holder.mBar.setVisibility(View.VISIBLE);
-                            Map<String, Object> user = new HashMap<>();
-                            user.put("image", documentSnapshot.getString("image"));
-
-                            FirebaseFirestore.getInstance()
-                                    .collection("Users")
-                                    .document(mCurrentId)
-                                    .collection("Friend_Requests")
-                                    .document(documentSnapshot.getString("id"))
-                                    .update(user)
-                                    .addOnSuccessListener(aVoid -> {
-                                        Log.i("friend_req_update", "success");
-                                        holder.mBar.setVisibility(View.GONE);
-                                    })
-                                    .addOnFailureListener(e -> Log.i("friend_req_update", "failure"));
+							FirebaseFirestore.getInstance()
+									.collection("Users")
+									.document(mCurrentId)
+									.collection("Friend_Requests")
+									.document(documentSnapshot.getString("id"))
+									.update(user)
+									.addOnSuccessListener(aVoid -> {
+										Log.i("friend_req_update", "success");
+										holder.mBar.setVisibility(View.GONE);
+									})
+									.addOnFailureListener(e -> Log.i("friend_req_update", "failure"));
 
 
-                            Glide.with(context)
-                                    .setDefaultRequestOptions(new RequestOptions().placeholder(R.drawable.default_profile_picture))
-                                    .load(documentSnapshot.getString("image"))
-                                    .into(holder.image);
+							holder.name.setText(documentSnapshot.getString("name"));
 
-                        }
+						} else if (!documentSnapshot.getString("image").equals(usersList.get(holder.getAdapterPosition()).getImage())) {
 
-                    }).addOnFailureListener(e -> Log.e("Error", e.getMessage()));
-        }catch (Exception ex){
-            Log.w("error","fastscrolled",ex);
-        }
+							holder.mBar.setVisibility(View.VISIBLE);
+							Map<String, Object> user = new HashMap<>();
+							user.put("image", documentSnapshot.getString("image"));
 
-        holder.mView.setOnClickListener(view -> FriendProfile.startActivity(context,usersList.get(holder.getAdapterPosition()).userId));
+							FirebaseFirestore.getInstance()
+									.collection("Users")
+									.document(mCurrentId)
+									.collection("Friend_Requests")
+									.document(documentSnapshot.getString("id"))
+									.update(user)
+									.addOnSuccessListener(aVoid -> {
+										Log.i("friend_req_update", "success");
+										holder.mBar.setVisibility(View.GONE);
+									})
+									.addOnFailureListener(e -> Log.i("friend_req_update", "failure"));
 
-    }
+
+							Glide.with(context)
+									.setDefaultRequestOptions(new RequestOptions().placeholder(R.drawable.default_profile_picture))
+									.load(documentSnapshot.getString("image"))
+									.into(holder.image);
+
+						}
+
+					}).addOnFailureListener(e -> Log.e("Error", e.getMessage()));
+		} catch (Exception ex) {
+			Log.w("error", "fastscrolled", ex);
+		}
+
+		holder.mView.setOnClickListener(view -> FriendProfile.startActivity(context, usersList.get(holder.getAdapterPosition()).userId));
+
+	}
 
 
-    @Override
-    public int getItemCount() {
-        return usersList.size();
-    }
+	@Override
+	public int getItemCount() {
+		return usersList.size();
+	}
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+	public class ViewHolder extends RecyclerView.ViewHolder {
 
-        private View mView;
-        private CircleImageView image;
-        private ProgressBar mBar;
-        private TextView name,timestamp;
+		private View mView;
+		private CircleImageView image;
+		private ProgressBar mBar;
+		private TextView name, timestamp;
 
-        public ViewHolder(View itemView) {
-            super(itemView);
+		public ViewHolder(View itemView) {
+			super(itemView);
 
-            mView =itemView;
-            image = mView.findViewById(R.id.userimage);
-            name=mView.findViewById(R.id.username);
-            timestamp=mView.findViewById(R.id.timestamp);
-            mBar=mView.findViewById(R.id.progressBar);
+			mView = itemView;
+			image = mView.findViewById(R.id.userimage);
+			name = mView.findViewById(R.id.username);
+			timestamp = mView.findViewById(R.id.timestamp);
+			mBar = mView.findViewById(R.id.progressBar);
 
-        }
-    }
+		}
+	}
 }

@@ -31,104 +31,102 @@ import java.util.List;
 
 import es.dmoral.toasty.Toasty;
 
-import static android.content.Context.MODE_PRIVATE;
-
 /**
  * Created by amsavarthan on 29/3/18.
  */
 
 public class SendMessage extends Fragment {
 
-    private List<Users> usersList;
-    private UsersAdapter usersAdapter;
-    private FirebaseFirestore firestore;
-    private FirebaseAuth mAuth;
-    private RecyclerView mRecyclerView;
-    private SwipeRefreshLayout refreshLayout;
+	private List<Users> usersList;
+	private UsersAdapter usersAdapter;
+	private FirebaseFirestore firestore;
+	private FirebaseAuth mAuth;
+	private RecyclerView mRecyclerView;
+	private SwipeRefreshLayout refreshLayout;
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.send_message_fragment, container, false);
-    }
+	@Nullable
+	@Override
+	public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+		return inflater.inflate(R.layout.send_message_fragment, container, false);
+	}
 
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+	@Override
+	public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+		super.onViewCreated(view, savedInstanceState);
 
-        firestore = FirebaseFirestore.getInstance();
-        mAuth = FirebaseAuth.getInstance();
+		firestore = FirebaseFirestore.getInstance();
+		mAuth = FirebaseAuth.getInstance();
 
-        mRecyclerView = view.findViewById(R.id.messageList);
-        refreshLayout=view.findViewById(R.id.refreshLayout);
+		mRecyclerView = view.findViewById(R.id.messageList);
+		refreshLayout = view.findViewById(R.id.refreshLayout);
 
-        usersList = new ArrayList<>();
-        usersAdapter = new UsersAdapter(usersList, view.getContext());
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(view.getContext(), DividerItemDecoration.VERTICAL));
-        mRecyclerView.setAdapter(usersAdapter);
+		usersList = new ArrayList<>();
+		usersAdapter = new UsersAdapter(usersList, view.getContext());
+		mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+		mRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
+		mRecyclerView.setHasFixedSize(true);
+		mRecyclerView.addItemDecoration(new DividerItemDecoration(view.getContext(), DividerItemDecoration.VERTICAL));
+		mRecyclerView.setAdapter(usersAdapter);
 
-        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                usersList.clear();
-                usersAdapter.notifyDataSetChanged();
-                startListening();
-            }
-        });
-        usersList.clear();
-        usersAdapter.notifyDataSetChanged();
-        startListening();
+		refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+			@Override
+			public void onRefresh() {
+				usersList.clear();
+				usersAdapter.notifyDataSetChanged();
+				startListening();
+			}
+		});
+		usersList.clear();
+		usersAdapter.notifyDataSetChanged();
+		startListening();
 
-    }
+	}
 
-    public void startListening() {
-        getView().findViewById(R.id.default_item).setVisibility(View.GONE);
-        refreshLayout.setRefreshing(true);
+	public void startListening() {
+		getView().findViewById(R.id.default_item).setVisibility(View.GONE);
+		refreshLayout.setRefreshing(true);
 
-        firestore.collection("Users")
-                .document(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .collection("Friends")
-                .orderBy("name", Query.Direction.ASCENDING)
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+		firestore.collection("Users")
+				.document(FirebaseAuth.getInstance().getCurrentUser().getUid())
+				.collection("Friends")
+				.orderBy("name", Query.Direction.ASCENDING)
+				.get()
+				.addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+					@Override
+					public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
 
-                        if(!queryDocumentSnapshots.isEmpty()) {
-                            for (DocumentChange doc : queryDocumentSnapshots.getDocumentChanges()) {
-                                if (doc.getType() == DocumentChange.Type.ADDED) {
-                                    Users users = doc.getDocument().toObject(Users.class).withId(doc.getDocument().getId());
-                                    usersList.add(users);
-                                    usersAdapter.notifyDataSetChanged();
-                                    refreshLayout.setRefreshing(false);
-                                }
-                            }
+						if (!queryDocumentSnapshots.isEmpty()) {
+							for (DocumentChange doc : queryDocumentSnapshots.getDocumentChanges()) {
+								if (doc.getType() == DocumentChange.Type.ADDED) {
+									Users users = doc.getDocument().toObject(Users.class).withId(doc.getDocument().getId());
+									usersList.add(users);
+									usersAdapter.notifyDataSetChanged();
+									refreshLayout.setRefreshing(false);
+								}
+							}
 
-                            if(usersList.isEmpty()){
-                                refreshLayout.setRefreshing(false);
-                                getView().findViewById(R.id.default_item).setVisibility(View.VISIBLE);
-                            }
+							if (usersList.isEmpty()) {
+								refreshLayout.setRefreshing(false);
+								getView().findViewById(R.id.default_item).setVisibility(View.VISIBLE);
+							}
 
-                        }else{
-                            getView().findViewById(R.id.default_item).setVisibility(View.VISIBLE);
-                            refreshLayout.setRefreshing(false);
-                        }
+						} else {
+							getView().findViewById(R.id.default_item).setVisibility(View.VISIBLE);
+							refreshLayout.setRefreshing(false);
+						}
 
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
+					}
+				})
+				.addOnFailureListener(new OnFailureListener() {
+					@Override
+					public void onFailure(@NonNull Exception e) {
 
-                        Toasty.error(getView().getContext(), "Some technical error occurred", Toasty.LENGTH_SHORT,true).show();
-                        refreshLayout.setRefreshing(false);
-                        Log.w("Error", "listen:error", e);
+						Toasty.error(getView().getContext(), "Some technical error occurred", Toasty.LENGTH_SHORT, true).show();
+						refreshLayout.setRefreshing(false);
+						Log.w("Error", "listen:error", e);
 
-                    }
-                });
-    }
+					}
+				});
+	}
 
 }

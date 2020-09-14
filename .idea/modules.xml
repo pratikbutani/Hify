@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Hify.iml" filepath="$PROJECT_DIR$/Hify.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Hify-app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Hify-app.iml" group="Hify/app" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Others-Hify.iml" filepath="$PROJECT_DIR$/.idea/modules/Others-Hify.iml" group="Hify" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

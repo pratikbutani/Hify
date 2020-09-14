@@ -13,57 +13,57 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
 
-    public static final String BASE_URL = "https://newsapi.org/v2/";
-    public static Retrofit retrofit;
+	public static final String BASE_URL = "https://newsapi.org/v2/";
+	public static Retrofit retrofit;
 
-    public static Retrofit getApiClient(){
+	public static Retrofit getApiClient() {
 
-        if (retrofit == null){
+		if (retrofit == null) {
 
-            retrofit = new Retrofit.Builder().baseUrl(BASE_URL)
-                    .client(getUnsafeOkHttpClient().build())
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
+			retrofit = new Retrofit.Builder().baseUrl(BASE_URL)
+					.client(getUnsafeOkHttpClient().build())
+					.addConverterFactory(GsonConverterFactory.create())
+					.build();
 
-        }
+		}
 
-        return retrofit;
-    }
+		return retrofit;
+	}
 
-    public static OkHttpClient.Builder getUnsafeOkHttpClient(){
-        try {
-            // Create a trust manager that does not validate certificate chains
-            final TrustManager[] trustAllCerts = new TrustManager[]{
-                    new X509TrustManager() {
-                        @Override
-                        public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) throws CertificateException {
-                        }
+	public static OkHttpClient.Builder getUnsafeOkHttpClient() {
+		try {
+			// Create a trust manager that does not validate certificate chains
+			final TrustManager[] trustAllCerts = new TrustManager[]{
+					new X509TrustManager() {
+						@Override
+						public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) throws CertificateException {
+						}
 
-                        @Override
-                        public void checkServerTrusted(java.security.cert.X509Certificate[] chain, String authType) throws CertificateException {
-                        }
+						@Override
+						public void checkServerTrusted(java.security.cert.X509Certificate[] chain, String authType) throws CertificateException {
+						}
 
-                        @Override
-                        public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-                            return new java.security.cert.X509Certificate[]{};
-                        }
-                    }
-            };
+						@Override
+						public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+							return new java.security.cert.X509Certificate[]{};
+						}
+					}
+			};
 
-            // Install the all-trusting trust manager
-            final SSLContext sslContext = SSLContext.getInstance("SSL");
-            sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
+			// Install the all-trusting trust manager
+			final SSLContext sslContext = SSLContext.getInstance("SSL");
+			sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
 
-            // Create an ssl socket factory with our all-trusting manager
-            final SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
+			// Create an ssl socket factory with our all-trusting manager
+			final SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
 
-            OkHttpClient.Builder builder = new OkHttpClient.Builder();
-            builder.sslSocketFactory(sslSocketFactory, (X509TrustManager) trustAllCerts[0]);
-            builder.hostnameVerifier((hostname, session) -> true);
-            return builder;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+			OkHttpClient.Builder builder = new OkHttpClient.Builder();
+			builder.sslSocketFactory(sslSocketFactory, (X509TrustManager) trustAllCerts[0]);
+			builder.hostnameVerifier((hostname, session) -> true);
+			return builder;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 }

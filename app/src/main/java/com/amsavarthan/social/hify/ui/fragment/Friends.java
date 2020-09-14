@@ -28,13 +28,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
 import es.dmoral.toasty.Toasty;
-
-import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by amsavarthan on 29/3/18.
@@ -42,108 +39,108 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class Friends extends Fragment {
 
-    private List<ViewFriends> usersList;
-    private ViewFriendAdapter usersAdapter;
-    private FirebaseFirestore firestore;
-    private FirebaseAuth mAuth;
-    private RecyclerView mRecyclerView;
-    private SwipeRefreshLayout refreshLayout;
+	private List<ViewFriends> usersList;
+	private ViewFriendAdapter usersAdapter;
+	private FirebaseFirestore firestore;
+	private FirebaseAuth mAuth;
+	private RecyclerView mRecyclerView;
+	private SwipeRefreshLayout refreshLayout;
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-       return inflater.inflate(R.layout.frag_view_friends, container, false);
-    }
+	@Nullable
+	@Override
+	public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+		return inflater.inflate(R.layout.frag_view_friends, container, false);
+	}
 
-    public void startListening() {
-        usersList.clear();
-        usersAdapter.notifyDataSetChanged();
-        getView().findViewById(R.id.default_item).setVisibility(View.GONE);
-        refreshLayout.setRefreshing(true);
+	public void startListening() {
+		usersList.clear();
+		usersAdapter.notifyDataSetChanged();
+		getView().findViewById(R.id.default_item).setVisibility(View.GONE);
+		refreshLayout.setRefreshing(true);
 
-        firestore.collection("Users")
-                .document(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .collection("Friends")
-                .orderBy("name", Query.Direction.ASCENDING)
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+		firestore.collection("Users")
+				.document(FirebaseAuth.getInstance().getCurrentUser().getUid())
+				.collection("Friends")
+				.orderBy("name", Query.Direction.ASCENDING)
+				.get()
+				.addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+					@Override
+					public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
 
-                        if(!queryDocumentSnapshots.isEmpty()) {
-                            for (DocumentChange doc : queryDocumentSnapshots.getDocumentChanges()) {
-                                if (doc.getType() == DocumentChange.Type.ADDED) {
-                                    ViewFriends users = doc.getDocument().toObject(ViewFriends.class);
-                                    usersList.add(users);
-                                    usersAdapter.notifyDataSetChanged();
-                                    refreshLayout.setRefreshing(false);
-                                }
-                            }
+						if (!queryDocumentSnapshots.isEmpty()) {
+							for (DocumentChange doc : queryDocumentSnapshots.getDocumentChanges()) {
+								if (doc.getType() == DocumentChange.Type.ADDED) {
+									ViewFriends users = doc.getDocument().toObject(ViewFriends.class);
+									usersList.add(users);
+									usersAdapter.notifyDataSetChanged();
+									refreshLayout.setRefreshing(false);
+								}
+							}
 
-                            if(usersList.isEmpty()){
-                                refreshLayout.setRefreshing(false);
-                                getView().findViewById(R.id.default_item).setVisibility(View.VISIBLE);
-                            }
+							if (usersList.isEmpty()) {
+								refreshLayout.setRefreshing(false);
+								getView().findViewById(R.id.default_item).setVisibility(View.VISIBLE);
+							}
 
-                        }else{
-                            refreshLayout.setRefreshing(false);
-                            getView().findViewById(R.id.default_item).setVisibility(View.VISIBLE);
-                        }
+						} else {
+							refreshLayout.setRefreshing(false);
+							getView().findViewById(R.id.default_item).setVisibility(View.VISIBLE);
+						}
 
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
+					}
+				})
+				.addOnFailureListener(new OnFailureListener() {
+					@Override
+					public void onFailure(@NonNull Exception e) {
 
-                        refreshLayout.setRefreshing(false);
-                        Toasty.error(getView().getContext(), "Some technical error occurred", Toasty.LENGTH_SHORT,true).show();
-                        Log.w("Error", "listen:error", e);
+						refreshLayout.setRefreshing(false);
+						Toasty.error(getView().getContext(), "Some technical error occurred", Toasty.LENGTH_SHORT, true).show();
+						Log.w("Error", "listen:error", e);
 
-                    }
-                });
-    }
+					}
+				});
+	}
 
 
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+	@Override
+	public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+		super.onViewCreated(view, savedInstanceState);
 
-        firestore = FirebaseFirestore.getInstance();
-        mAuth = FirebaseAuth.getInstance();
+		firestore = FirebaseFirestore.getInstance();
+		mAuth = FirebaseAuth.getInstance();
 
-        mRecyclerView =  getView().findViewById(R.id.recyclerView);
-        refreshLayout=getView().findViewById(R.id.refreshLayout);
+		mRecyclerView = getView().findViewById(R.id.recyclerView);
+		refreshLayout = getView().findViewById(R.id.refreshLayout);
 
-        usersList = new ArrayList<>();
-        usersAdapter = new ViewFriendAdapter(usersList, view.getContext());
+		usersList = new ArrayList<>();
+		usersAdapter = new ViewFriendAdapter(usersList, view.getContext());
 
-        ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RecyclerViewTouchHelper(0, ItemTouchHelper.LEFT, new RecyclerViewTouchHelper.RecyclerItemTouchHelperListener() {
-            @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
-                if (viewHolder instanceof ViewFriendAdapter.ViewHolder) {
+		ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RecyclerViewTouchHelper(0, ItemTouchHelper.LEFT, new RecyclerViewTouchHelper.RecyclerItemTouchHelperListener() {
+			@Override
+			public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
+				if (viewHolder instanceof ViewFriendAdapter.ViewHolder) {
 
-                    usersAdapter.removeItem(viewHolder.getAdapterPosition());
+					usersAdapter.removeItem(viewHolder.getAdapterPosition());
 
-                }
-            }
-        });
+				}
+			}
+		});
 
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(view.getContext(), DividerItemDecoration.VERTICAL));
-        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(mRecyclerView);
-        mRecyclerView.setAdapter(usersAdapter);
+		mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+		mRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
+		mRecyclerView.setHasFixedSize(true);
+		mRecyclerView.addItemDecoration(new DividerItemDecoration(view.getContext(), DividerItemDecoration.VERTICAL));
+		new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(mRecyclerView);
+		mRecyclerView.setAdapter(usersAdapter);
 
-        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                startListening();
-            }
-        });
+		refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+			@Override
+			public void onRefresh() {
+				startListening();
+			}
+		});
 
-        startListening();
+		startListening();
 
-    }
+	}
 }

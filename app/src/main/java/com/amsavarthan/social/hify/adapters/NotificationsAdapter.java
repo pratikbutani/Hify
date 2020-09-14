@@ -34,128 +34,128 @@ import es.dmoral.toasty.Toasty;
 
 public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdapter.ViewHolder> {
 
-    private List<Notification> notificationsList;
-    private Context context;
+	private List<Notification> notificationsList;
+	private Context context;
 
-    public NotificationsAdapter(List<Notification> notificationsList, Context context) {
-        this.notificationsList = notificationsList;
-        this.context = context;
-    }
+	public NotificationsAdapter(List<Notification> notificationsList, Context context) {
+		this.notificationsList = notificationsList;
+		this.context = context;
+	}
 
-    @NonNull
-    @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view=LayoutInflater.from(context).inflate(R.layout.item_notification,parent,false);
-        return new ViewHolder(view);
-    }
+	@NonNull
+	@Override
+	public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+		View view = LayoutInflater.from(context).inflate(R.layout.item_notification, parent, false);
+		return new ViewHolder(view);
+	}
 
 	@Override
-    public long getItemId(int position) {
-        return position;
-    }
+	public long getItemId(int position) {
+		return position;
+	}
 
-    @Override
-    public int getItemViewType(int position) {
-        return position;
-    }
-	
-    @Override
-    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
+	@Override
+	public int getItemViewType(int position) {
+		return position;
+	}
 
-        Notification notification=notificationsList.get(position);
+	@Override
+	public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
 
-        Glide.with(context)
-                .setDefaultRequestOptions(new RequestOptions().placeholder(R.drawable.default_profile_picture))
-                .load(notification.getImage())
-                .into(holder.image);
+		Notification notification = notificationsList.get(position);
 
-        holder.title.setText(notification.getUsername());
-        holder.body.setText(notification.getMessage());
-        holder.timestamp.setText(TimeAgo.using(Long.parseLong(notification.getTimestamp())));
+		Glide.with(context)
+				.setDefaultRequestOptions(new RequestOptions().placeholder(R.drawable.default_profile_picture))
+				.load(notification.getImage())
+				.into(holder.image);
 
-        if(notification.getType().equals("like")){
-            holder.type_image.setImageResource(R.drawable.ic_favorite_red_24dp);
-        }else if(notification.getType().equals("comment")){
-            holder.type_image.setImageResource(R.drawable.ic_comment_blue);
-        }else if(notification.getType().equals("friend_req")){
-            holder.type_image.setImageResource(R.drawable.ic_person_add_yellow_24dp);
-        }else if(notification.getType().equals("accept_friend_req")){
-            holder.type_image.setImageResource(R.drawable.ic_person_green_24dp);
-        }else{
-            holder.type_image.setImageResource(R.drawable.ic_forum_black_24dp);
-        }
+		holder.title.setText(notification.getUsername());
+		holder.body.setText(notification.getMessage());
+		holder.timestamp.setText(TimeAgo.using(Long.parseLong(notification.getTimestamp())));
 
-        holder.itemView.setOnClickListener(v -> {
+		if (notification.getType().equals("like")) {
+			holder.type_image.setImageResource(R.drawable.ic_favorite_red_24dp);
+		} else if (notification.getType().equals("comment")) {
+			holder.type_image.setImageResource(R.drawable.ic_comment_blue);
+		} else if (notification.getType().equals("friend_req")) {
+			holder.type_image.setImageResource(R.drawable.ic_person_add_yellow_24dp);
+		} else if (notification.getType().equals("accept_friend_req")) {
+			holder.type_image.setImageResource(R.drawable.ic_person_green_24dp);
+		} else {
+			holder.type_image.setImageResource(R.drawable.ic_forum_black_24dp);
+		}
 
-            if(notification.getType().equals("like") || notification.getType().equals("comment")){
+		holder.itemView.setOnClickListener(v -> {
 
-                context.startActivity(new Intent(context, SinglePostView.class).putExtra("post_id",notification.getAction_id()));
+			if (notification.getType().equals("like") || notification.getType().equals("comment")) {
 
-            }else if(notification.getType().equals("friend_req") || notification.getType().equals("accept_friend_req")){
+				context.startActivity(new Intent(context, SinglePostView.class).putExtra("post_id", notification.getAction_id()));
 
-                FriendProfile.startActivity(context,notification.getAction_id());
+			} else if (notification.getType().equals("friend_req") || notification.getType().equals("accept_friend_req")) {
 
-            }else{
+				FriendProfile.startActivity(context, notification.getAction_id());
 
-                AnswersActivity.startActivity(context,notification.getAction_id());
+			} else {
 
-            }
+				AnswersActivity.startActivity(context, notification.getAction_id());
 
-        });
+			}
 
-        holder.itemView.setOnLongClickListener(v -> {
+		});
 
-            new MaterialDialog.Builder(context)
-                    .title("Delete notification")
-                    .content("Are you sure do you want to delete this notification?")
-                    .positiveText("Yes")
-                    .negativeText("No")
-                    .onPositive((dialog, which) -> {
+		holder.itemView.setOnLongClickListener(v -> {
 
-                        FirebaseFirestore.getInstance()
-                                .collection("Users")
-                                .document(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                .collection("Info_Notifications")
-                                .document(notificationsList.get(holder.getAdapterPosition()).documentId)
-                                .delete()
-                                .addOnSuccessListener(aVoid -> {
-                                })
-                                .addOnFailureListener(e -> e.printStackTrace());
+			new MaterialDialog.Builder(context)
+					.title("Delete notification")
+					.content("Are you sure do you want to delete this notification?")
+					.positiveText("Yes")
+					.negativeText("No")
+					.onPositive((dialog, which) -> {
 
-                        notificationsList.remove(holder.getAdapterPosition());
-                        Toasty.success(context,"Notification removed",Toasty.LENGTH_SHORT,true).show();
-                        notifyDataSetChanged();
+						FirebaseFirestore.getInstance()
+								.collection("Users")
+								.document(FirebaseAuth.getInstance().getCurrentUser().getUid())
+								.collection("Info_Notifications")
+								.document(notificationsList.get(holder.getAdapterPosition()).documentId)
+								.delete()
+								.addOnSuccessListener(aVoid -> {
+								})
+								.addOnFailureListener(e -> e.printStackTrace());
 
-                    })
-                    .show();
+						notificationsList.remove(holder.getAdapterPosition());
+						Toasty.success(context, "Notification removed", Toasty.LENGTH_SHORT, true).show();
+						notifyDataSetChanged();
 
-            return true;
-        });
+					})
+					.show();
 
-    }
+			return true;
+		});
 
-    @Override
-    public int getItemCount() {
-        return notificationsList.size();
-    }
+	}
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+	@Override
+	public int getItemCount() {
+		return notificationsList.size();
+	}
 
-        private View mView;
-        private CircleImageView image;
-        private ImageView type_image;
-        private TextView title,body,timestamp;
+	public class ViewHolder extends RecyclerView.ViewHolder {
 
-        public ViewHolder(View itemView) {
-            super(itemView);
+		private View mView;
+		private CircleImageView image;
+		private ImageView type_image;
+		private TextView title, body, timestamp;
 
-            mView=itemView;
-            image = mView.findViewById(R.id.image);
-            type_image = mView.findViewById(R.id.type_image);
-            title = mView.findViewById(R.id.title);
-            body = mView.findViewById(R.id.body);
-            timestamp=mView.findViewById(R.id.timestamp);
+		public ViewHolder(View itemView) {
+			super(itemView);
 
-        }
-    }
+			mView = itemView;
+			image = mView.findViewById(R.id.image);
+			type_image = mView.findViewById(R.id.type_image);
+			title = mView.findViewById(R.id.title);
+			body = mView.findViewById(R.id.body);
+			timestamp = mView.findViewById(R.id.timestamp);
+
+		}
+	}
 }

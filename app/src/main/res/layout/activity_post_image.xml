@@ -1,121 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="com.amsavarthan.social.hify.ui.activities.post.PostImage">
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical"
+	tools:context="com.amsavarthan.social.hify.ui.activities.post.PostImage">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/top"
-        android:layout_alignParentTop="true"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+	<com.google.android.material.appbar.AppBarLayout
+		android:id="@+id/top"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_alignParentTop="true">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            app:title="New Image Post" />
+		<androidx.appcompat.widget.Toolbar
+			android:id="@+id/toolbar"
+			android:layout_width="match_parent"
+			android:layout_height="60dp"
+			app:title="New Image Post" />
 
-    </com.google.android.material.appbar.AppBarLayout>
+	</com.google.android.material.appbar.AppBarLayout>
 
-    <LinearLayout
-        android:layout_below="@+id/top"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:layout_below="@+id/top"
+		android:orientation="vertical">
 
-        <FrameLayout
-            android:id="@+id/pager_layout"
-            android:visibility="visible"
-            android:layout_width="match_parent"
-            android:layout_height="360dp">
+		<FrameLayout
+			android:id="@+id/pager_layout"
+			android:layout_width="match_parent"
+			android:layout_height="360dp"
+			android:visibility="visible">
 
-            <androidx.viewpager.widget.ViewPager
-                android:id="@+id/pager"
-                android:layout_gravity="top"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                />
+			<androidx.viewpager.widget.ViewPager
+				android:id="@+id/pager"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:layout_gravity="top" />
 
 
-            <RelativeLayout
-                android:visibility="visible"
-                android:id="@+id/indicator_holder"
-                android:background="#20000000"
-                android:layout_gravity="bottom"
-                android:padding="12dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+			<RelativeLayout
+				android:id="@+id/indicator_holder"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_gravity="bottom"
+				android:background="#20000000"
+				android:padding="12dp"
+				android:visibility="visible">
 
-                <com.tbuonomo.viewpagerdotsindicator.DotsIndicator
-                    android:id="@+id/indicator"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    app:dotsColor="@color/white"
-                    app:dotsCornerRadius="8dp"
-                    app:dotsSize="6dp"
-                    app:dotsSpacing="4dp"
-                    app:dotsWidthFactor="2.5"
-                    />
+				<com.tbuonomo.viewpagerdotsindicator.DotsIndicator
+					android:id="@+id/indicator"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_centerHorizontal="true"
+					app:dotsColor="@color/white"
+					app:dotsCornerRadius="8dp"
+					app:dotsSize="6dp"
+					app:dotsSpacing="4dp"
+					app:dotsWidthFactor="2.5" />
 
-            </RelativeLayout>
+			</RelativeLayout>
 
-        </FrameLayout>
+		</FrameLayout>
 
-        <RelativeLayout
-            android:padding="5dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+		<RelativeLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:padding="5dp">
 
-            <ImageView
-                android:clickable="true"
-                android:focusable="true"
-                android:background="?selectableItemBackground"
-                android:id="@+id/delete"
-                android:layout_alignParentEnd="true"
-                android:padding="10dp"
-                android:onClick="deleteItem"
-                android:src="@drawable/ic_delete_black_24dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+			<ImageView
+				android:id="@+id/delete"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_alignParentEnd="true"
+				android:background="?selectableItemBackground"
+				android:clickable="true"
+				android:focusable="true"
+				android:onClick="deleteItem"
+				android:padding="10dp"
+				android:src="@drawable/ic_delete_black_24dp" />
 
-            <ImageView
-                android:clickable="true"
-                android:focusable="true"
-                android:onClick="openCropItem"
-                android:background="?selectableItemBackground"
-                android:layout_marginEnd="10dp"
-                android:layout_toStartOf="@+id/delete"
-                android:id="@+id/edit_crop"
-                android:padding="10dp"
-                android:src="@drawable/ic_crop_rotate_black_24dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+			<ImageView
+				android:id="@+id/edit_crop"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginEnd="10dp"
+				android:layout_toStartOf="@+id/delete"
+				android:background="?selectableItemBackground"
+				android:clickable="true"
+				android:focusable="true"
+				android:onClick="openCropItem"
+				android:padding="10dp"
+				android:src="@drawable/ic_crop_rotate_black_24dp" />
 
-        </RelativeLayout>
+		</RelativeLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:hint="Some description about the post"
-            android:layout_marginEnd="10dp"
-            android:layout_marginStart="10dp"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_height="wrap_content">
+		<com.google.android.material.textfield.TextInputLayout
+			style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="10dp"
+			android:layout_marginEnd="10dp"
+			android:hint="Some description about the post">
 
-            <EditText
-                android:id="@+id/text"
-                android:maxLines="5"
-                android:inputType="text|textMultiLine"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                />
+			<EditText
+				android:id="@+id/text"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:inputType="text|textMultiLine"
+				android:maxLines="5" />
 
-        </com.google.android.material.textfield.TextInputLayout>
+		</com.google.android.material.textfield.TextInputLayout>
 
-    </LinearLayout>
+	</LinearLayout>
 
 </RelativeLayout>

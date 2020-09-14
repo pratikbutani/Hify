@@ -30,137 +30,137 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> {
 
-    private List<Users> usersList;
-    private Context context;
+	private List<Users> usersList;
+	private Context context;
 
-    public UsersAdapter(List<Users> usersList, Context context) {
-        this.usersList = usersList;
-        this.context = context;
-    }
+	public UsersAdapter(List<Users> usersList, Context context) {
+		this.usersList = usersList;
+		this.context = context;
+	}
 
-    @NonNull
-    @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view= LayoutInflater.from(context).inflate(R.layout.item_user,parent,false);
-        return new ViewHolder(view);
-    }
+	@NonNull
+	@Override
+	public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+		View view = LayoutInflater.from(context).inflate(R.layout.item_user, parent, false);
+		return new ViewHolder(view);
+	}
 
 	@Override
-    public long getItemId(int position) {
-        return position;
-    }
+	public long getItemId(int position) {
+		return position;
+	}
 
-    @Override
-    public int getItemViewType(int position) {
-        return position;
-    }
-	
-    @Override
-    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
+	@Override
+	public int getItemViewType(int position) {
+		return position;
+	}
 
-        holder.name.setText(usersList.get(position).getName());
+	@Override
+	public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
 
-        Glide.with(context)
-                .setDefaultRequestOptions(new RequestOptions().placeholder(R.drawable.default_profile_picture))
-                .load(usersList.get(position).getImage())
-                .into(holder.image);
+		holder.name.setText(usersList.get(position).getName());
 
-        FirebaseFirestore.getInstance().collection("Users")
-                .document(usersList.get(position).userId)
-                .get()
-                .addOnSuccessListener(documentSnapshot -> {
+		Glide.with(context)
+				.setDefaultRequestOptions(new RequestOptions().placeholder(R.drawable.default_profile_picture))
+				.load(usersList.get(position).getImage())
+				.into(holder.image);
 
-                    try {
-                        if (!documentSnapshot.getString("name").equals(usersList.get(holder.getAdapterPosition()).getName()) &&
-                                !documentSnapshot.getString("image").equals(usersList.get(holder.getAdapterPosition()).getImage())) {
+		FirebaseFirestore.getInstance().collection("Users")
+				.document(usersList.get(position).userId)
+				.get()
+				.addOnSuccessListener(documentSnapshot -> {
 
-                            Map<String, Object> user = new HashMap<>();
-                            user.put("name", documentSnapshot.getString("name"));
-                            user.put("image", documentSnapshot.getString("image"));
+					try {
+						if (!documentSnapshot.getString("name").equals(usersList.get(holder.getAdapterPosition()).getName()) &&
+								!documentSnapshot.getString("image").equals(usersList.get(holder.getAdapterPosition()).getImage())) {
 
-                            FirebaseFirestore.getInstance().collection("Users")
-                                    .document(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                    .collection("Friends")
-                                    .document(usersList.get(holder.getAdapterPosition()).userId)
-                                    .update(user)
-                                    .addOnSuccessListener(aVoid -> Log.i("friend_update", "success"))
-                                    .addOnFailureListener(e -> Log.i("friend_update", "failure"));
+							Map<String, Object> user = new HashMap<>();
+							user.put("name", documentSnapshot.getString("name"));
+							user.put("image", documentSnapshot.getString("image"));
 
-                            holder.name.setText(documentSnapshot.getString("name"));
+							FirebaseFirestore.getInstance().collection("Users")
+									.document(FirebaseAuth.getInstance().getCurrentUser().getUid())
+									.collection("Friends")
+									.document(usersList.get(holder.getAdapterPosition()).userId)
+									.update(user)
+									.addOnSuccessListener(aVoid -> Log.i("friend_update", "success"))
+									.addOnFailureListener(e -> Log.i("friend_update", "failure"));
 
-                            Glide.with(context)
-                                    .setDefaultRequestOptions(new RequestOptions().placeholder(R.drawable.default_profile_picture))
-                                    .load(documentSnapshot.getString("image"))
-                                    .into(holder.image);
+							holder.name.setText(documentSnapshot.getString("name"));
 
-
-                        } else if (!documentSnapshot.getString("name").equals(usersList.get(holder.getAdapterPosition()).getName())) {
-
-                            Map<String, Object> user = new HashMap<>();
-                            user.put("name", documentSnapshot.getString("name"));
-
-                            FirebaseFirestore.getInstance().collection("Users")
-                                    .document(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                    .collection("Friends")
-                                    .document(usersList.get(holder.getAdapterPosition()).userId)
-                                    .update(user)
-                                    .addOnSuccessListener(aVoid -> Log.i("friend_update", "success"))
-                                    .addOnFailureListener(e -> Log.i("friend_update", "failure"));
+							Glide.with(context)
+									.setDefaultRequestOptions(new RequestOptions().placeholder(R.drawable.default_profile_picture))
+									.load(documentSnapshot.getString("image"))
+									.into(holder.image);
 
 
-                            holder.name.setText(documentSnapshot.getString("name"));
+						} else if (!documentSnapshot.getString("name").equals(usersList.get(holder.getAdapterPosition()).getName())) {
 
-                        } else if (!documentSnapshot.getString("image").equals(usersList.get(holder.getAdapterPosition()).getImage())) {
+							Map<String, Object> user = new HashMap<>();
+							user.put("name", documentSnapshot.getString("name"));
 
-                            Map<String, Object> user = new HashMap<>();
-                            user.put("image", documentSnapshot.getString("image"));
-
-                            FirebaseFirestore.getInstance().collection("Users")
-                                    .document(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                    .collection("Friends")
-                                    .document(usersList.get(holder.getAdapterPosition()).userId)
-                                    .update(user)
-                                    .addOnSuccessListener(aVoid -> Log.i("friend_update", "success"))
-                                    .addOnFailureListener(e -> Log.i("friend_update", "failure"));
+							FirebaseFirestore.getInstance().collection("Users")
+									.document(FirebaseAuth.getInstance().getCurrentUser().getUid())
+									.collection("Friends")
+									.document(usersList.get(holder.getAdapterPosition()).userId)
+									.update(user)
+									.addOnSuccessListener(aVoid -> Log.i("friend_update", "success"))
+									.addOnFailureListener(e -> Log.i("friend_update", "failure"));
 
 
-                            Glide.with(context)
-                                    .setDefaultRequestOptions(new RequestOptions().placeholder(R.drawable.default_profile_picture))
-                                    .load(documentSnapshot.getString("image"))
-                                    .into(holder.image);
+							holder.name.setText(documentSnapshot.getString("name"));
 
-                        }
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
-                });
+						} else if (!documentSnapshot.getString("image").equals(usersList.get(holder.getAdapterPosition()).getImage())) {
+
+							Map<String, Object> user = new HashMap<>();
+							user.put("image", documentSnapshot.getString("image"));
+
+							FirebaseFirestore.getInstance().collection("Users")
+									.document(FirebaseAuth.getInstance().getCurrentUser().getUid())
+									.collection("Friends")
+									.document(usersList.get(holder.getAdapterPosition()).userId)
+									.update(user)
+									.addOnSuccessListener(aVoid -> Log.i("friend_update", "success"))
+									.addOnFailureListener(e -> Log.i("friend_update", "failure"));
 
 
-        final String userid=usersList.get(position).userId;
+							Glide.with(context)
+									.setDefaultRequestOptions(new RequestOptions().placeholder(R.drawable.default_profile_picture))
+									.load(documentSnapshot.getString("image"))
+									.into(holder.image);
 
-        holder.mView.setOnClickListener(view -> SendActivity.startActivityfromAdapter(context,userid,usersList.get(holder.getAdapterPosition()).getName()));
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				});
 
 
-    }
+		final String userid = usersList.get(position).userId;
 
-    @Override
-    public int getItemCount() {
-        return usersList.size();
-    }
+		holder.mView.setOnClickListener(view -> SendActivity.startActivityfromAdapter(context, userid, usersList.get(holder.getAdapterPosition()).getName()));
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
 
-        private View mView;
-        private CircleImageView image;
-        private TextView name;
+	}
 
-        public ViewHolder(View itemView) {
-            super(itemView);
+	@Override
+	public int getItemCount() {
+		return usersList.size();
+	}
 
-            mView=itemView;
-            image = mView.findViewById(R.id.image);
-            name = mView.findViewById(R.id.name);
+	public class ViewHolder extends RecyclerView.ViewHolder {
 
-        }
-    }
+		private View mView;
+		private CircleImageView image;
+		private TextView name;
+
+		public ViewHolder(View itemView) {
+			super(itemView);
+
+			mView = itemView;
+			image = mView.findViewById(R.id.image);
+			name = mView.findViewById(R.id.name);
+
+		}
+	}
 }

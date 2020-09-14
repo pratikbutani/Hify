@@ -8,52 +8,52 @@ import android.content.Intent;
 
 public class Extras {
 
-    public String title, subtitle;
-    public int image;
-    public Intent intent;
+	public String title, subtitle;
+	public int image;
+	public Intent intent;
 
-    public Extras() {
-    }
+	public Extras() {
+	}
 
-    public Extras(String title, String subtitle, int image, Intent intent) {
-        this.title = title;
-        this.subtitle = subtitle;
-        this.image = image;
-        this.intent = intent;
-    }
+	public Extras(String title, String subtitle, int image, Intent intent) {
+		this.title = title;
+		this.subtitle = subtitle;
+		this.image = image;
+		this.intent = intent;
+	}
 
-    public Intent getIntent() {
+	public Intent getIntent() {
 
-        return intent;
-    }
+		return intent;
+	}
 
-    public void setIntent(Intent intent) {
-        this.intent = intent;
-    }
+	public void setIntent(Intent intent) {
+		this.intent = intent;
+	}
 
 
-    public String getTitle() {
+	public String getTitle() {
 
-        return title;
-    }
+		return title;
+	}
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
+	public void setTitle(String title) {
+		this.title = title;
+	}
 
-    public String getSubtitle() {
-        return subtitle;
-    }
+	public String getSubtitle() {
+		return subtitle;
+	}
 
-    public void setSubtitle(String subtitle) {
-        this.subtitle = subtitle;
-    }
+	public void setSubtitle(String subtitle) {
+		this.subtitle = subtitle;
+	}
 
-    public int getImage() {
-        return image;
-    }
+	public int getImage() {
+		return image;
+	}
 
-    public void setImage(int image) {
-        this.image = image;
-    }
+	public void setImage(int image) {
+		this.image = image;
+	}
 }

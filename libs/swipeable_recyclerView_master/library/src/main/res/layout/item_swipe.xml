@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2015 Thomas Robert Altstidl
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2015 Thomas Robert Altstidl
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
      You may obtain a copy of the License at
@@ -14,16 +13,16 @@
 -->
 
 <com.tr4android.recyclerviewslideitem.SwipeItem xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content">
 
-    <include
-        layout="@layout/item_swipe_info"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+	<include
+		layout="@layout/item_swipe_info"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content" />
 
-    <include
-        layout="@layout/item_swipe_undo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+	<include
+		layout="@layout/item_swipe_undo"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content" />
 </com.tr4android.recyclerviewslideitem.SwipeItem>

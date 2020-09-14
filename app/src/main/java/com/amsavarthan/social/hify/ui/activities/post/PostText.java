@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
@@ -49,294 +48,294 @@ import static android.content.res.Configuration.UI_MODE_NIGHT_NO;
 
 public class PostText extends AppCompatActivity {
 
-    AutofitTextView preview_text;
-    EditText text;
-    FirebaseFirestore mFirestore;
-    FirebaseUser mCurrentUser;
-    String color="7";
-    private FrameLayout mImageholder;
-    private FirebaseAuth mAuth;
+	AutofitTextView preview_text;
+	EditText text;
+	FirebaseFirestore mFirestore;
+	FirebaseUser mCurrentUser;
+	String color = "7";
+	private FrameLayout mImageholder;
+	private FirebaseAuth mAuth;
 
-    public static void startActivity(Context context) {
-        Intent intent = new Intent(context, PostText.class);
-        context.startActivity(intent);
-    }
+	public static void startActivity(Context context) {
+		Intent intent = new Intent(context, PostText.class);
+		context.startActivity(intent);
+	}
 
-    public static void startActivity(Context context,String preText) {
-        Intent intent = new Intent(context, PostText.class).putExtra("preText",preText);
-        context.startActivity(intent);
-    }
-
-
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
-    }
-
-    @Override
-    public boolean onSupportNavigateUp() {
-        onBackPressed();
-        return true;
-    }
-
-    @Override
-    public void onBackPressed() {
-        new MaterialDialog.Builder(this)
-                .title("Discard")
-                .content("Are you sure do you want to go back?")
-                .positiveText("Yes")
-                .canceledOnTouchOutside(false)
-                .cancelable(false)
-                .onPositive((dialog, which) -> finish())
-                .negativeText("No")
-                .show();
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        ViewPump.init(ViewPump.builder()
-                .addInterceptor(new CalligraphyInterceptor(
-                        new CalligraphyConfig.Builder()
-                                .setDefaultFontPath("fonts/bold.ttf")
-                                .setFontAttrId(R.attr.fontPath)
-                                .build()))
-                .build());
-
-        setContentView(R.layout.activity_post_text);
-
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        toolbar.setTitle("New Text Post");
-
-        int nightModeFlags=getResources().getConfiguration().uiMode& Configuration.UI_MODE_NIGHT_MASK;
-        if(nightModeFlags==UI_MODE_NIGHT_NO){
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                int flags=getWindow().getDecorView().getSystemUiVisibility();
-                flags|=View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-                getWindow().getDecorView().setSystemUiVisibility(flags);
-            }
-            toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDarkk));
-        }
-        try {
-            getSupportActionBar().setTitle("New Text Post");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-
-        mFirestore = FirebaseFirestore.getInstance();
-        mAuth = FirebaseAuth.getInstance();
-        mCurrentUser = mAuth.getCurrentUser();
-
-        text = findViewById(R.id.text);
-        preview_text = findViewById(R.id.text_preview);
-        mImageholder = findViewById(R.id.image_holder);
-
-        if(StringUtils.isNotEmpty(getIntent().getStringExtra("preText"))){
-            text.setText(getIntent().getStringExtra("preText"));
-            preview_text.setText(getIntent().getStringExtra("preText"));
-        }
-
-        text.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                preview_text.setText(charSequence);
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        });
-
-    }
+	public static void startActivity(Context context, String preText) {
+		Intent intent = new Intent(context, PostText.class).putExtra("preText", preText);
+		context.startActivity(intent);
+	}
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.menu_text_post, menu);
-        return true;
-    }
+	@Override
+	protected void attachBaseContext(Context newBase) {
+		super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
+	}
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+	@Override
+	public boolean onSupportNavigateUp() {
+		onBackPressed();
+		return true;
+	}
 
-        switch (item.getItemId()) {
-            case R.id.action_post:
-                if (!TextUtils.isEmpty(text.getText().toString()))
-                    sendPost();
-                else
-                    AnimationUtil.shakeView(text, PostText.this);
-                return true;
+	@Override
+	public void onBackPressed() {
+		new MaterialDialog.Builder(this)
+				.title("Discard")
+				.content("Are you sure do you want to go back?")
+				.positiveText("Yes")
+				.canceledOnTouchOutside(false)
+				.cancelable(false)
+				.onPositive((dialog, which) -> finish())
+				.negativeText("No")
+				.show();
+	}
 
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 
-    private void sendPost() {
+		ViewPump.init(ViewPump.builder()
+				.addInterceptor(new CalligraphyInterceptor(
+						new CalligraphyConfig.Builder()
+								.setDefaultFontPath("fonts/bold.ttf")
+								.setFontAttrId(R.attr.fontPath)
+								.build()))
+				.build());
 
-        final ProgressDialog mDialog = new ProgressDialog(this);
-        mDialog.setMessage("Posting...");
-        mDialog.setIndeterminate(true);
-        mDialog.setCancelable(false);
-        mDialog.setCanceledOnTouchOutside(false);
-        mDialog.show();
+		setContentView(R.layout.activity_post_text);
 
-        mFirestore.collection("Users").document(mCurrentUser.getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
+		Toolbar toolbar = findViewById(R.id.toolbar);
+		setSupportActionBar(toolbar);
+		toolbar.setTitle("New Text Post");
 
-                Map<String, Object> postMap = new HashMap<>();
-                postMap.put("userId", documentSnapshot.getString("id"));
-                postMap.put("username", documentSnapshot.getString("username"));
-                postMap.put("name", documentSnapshot.getString("name"));
-                postMap.put("userimage", documentSnapshot.getString("image"));
-                postMap.put("timestamp", String.valueOf(System.currentTimeMillis()));
-                postMap.put("image_count",0);
-                postMap.put("description", text.getText().toString());
-                postMap.put("color", color);
+		int nightModeFlags = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+		if (nightModeFlags == UI_MODE_NIGHT_NO) {
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+				int flags = getWindow().getDecorView().getSystemUiVisibility();
+				flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+				getWindow().getDecorView().setSystemUiVisibility(flags);
+			}
+			toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDarkk));
+		}
+		try {
+			getSupportActionBar().setTitle("New Text Post");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+		mFirestore = FirebaseFirestore.getInstance();
+		mAuth = FirebaseAuth.getInstance();
+		mCurrentUser = mAuth.getCurrentUser();
+
+		text = findViewById(R.id.text);
+		preview_text = findViewById(R.id.text_preview);
+		mImageholder = findViewById(R.id.image_holder);
+
+		if (StringUtils.isNotEmpty(getIntent().getStringExtra("preText"))) {
+			text.setText(getIntent().getStringExtra("preText"));
+			preview_text.setText(getIntent().getStringExtra("preText"));
+		}
+
+		text.addTextChangedListener(new TextWatcher() {
+			@Override
+			public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+			}
+
+			@Override
+			public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+				preview_text.setText(charSequence);
+			}
+
+			@Override
+			public void afterTextChanged(Editable editable) {
+
+			}
+		});
+
+	}
 
 
-                mFirestore.collection("Posts")
-                        .add(postMap)
-                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                            @Override
-                            public void onSuccess(DocumentReference documentReference) {
-                                mDialog.dismiss();
-                                Toasty.success(PostText.this, "Post sent", Toasty.LENGTH_SHORT,true).show();
-                                finish();
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                mDialog.dismiss();
-                                Log.e("Error sending post", e.getMessage());
-                            }
-                        });
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater menuInflater = getMenuInflater();
+		menuInflater.inflate(R.menu.menu_text_post, menu);
+		return true;
+	}
 
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                mDialog.dismiss();
-                Log.e("Error getting user", e.getMessage());
-            }
-        });
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
 
-    }
+		switch (item.getItemId()) {
+			case R.id.action_post:
+				if (!TextUtils.isEmpty(text.getText().toString()))
+					sendPost();
+				else
+					AnimationUtil.shakeView(text, PostText.this);
+				return true;
 
-    public void onFabClicked(View view) {
+			default:
+				return super.onOptionsItemSelected(item);
+		}
+	}
 
-        switch (view.getId()) {
+	private void sendPost() {
 
-            case R.id.fab1:
-                mImageholder.setBackground(getResources().getDrawable(R.drawable.gradient_1));
-                color = "1";
-                return;
+		final ProgressDialog mDialog = new ProgressDialog(this);
+		mDialog.setMessage("Posting...");
+		mDialog.setIndeterminate(true);
+		mDialog.setCancelable(false);
+		mDialog.setCanceledOnTouchOutside(false);
+		mDialog.show();
 
-            case R.id.fab2:
-                mImageholder.setBackground(getResources().getDrawable(R.drawable.gradient_2));
-                color = "2";
-                return;
+		mFirestore.collection("Users").document(mCurrentUser.getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+			@Override
+			public void onSuccess(DocumentSnapshot documentSnapshot) {
 
-            case R.id.fab3:
-                mImageholder.setBackground(getResources().getDrawable(R.drawable.gradient_3));
-                color = "3";
-                return;
+				Map<String, Object> postMap = new HashMap<>();
+				postMap.put("userId", documentSnapshot.getString("id"));
+				postMap.put("username", documentSnapshot.getString("username"));
+				postMap.put("name", documentSnapshot.getString("name"));
+				postMap.put("userimage", documentSnapshot.getString("image"));
+				postMap.put("timestamp", String.valueOf(System.currentTimeMillis()));
+				postMap.put("image_count", 0);
+				postMap.put("description", text.getText().toString());
+				postMap.put("color", color);
 
-            case R.id.fab4:
-                mImageholder.setBackground(getResources().getDrawable(R.drawable.gradient_4));
-                color = "4";
-                return;
 
-            case R.id.fab5:
-                mImageholder.setBackground(getResources().getDrawable(R.drawable.gradient_5));
-                color = "5";
-                return;
+				mFirestore.collection("Posts")
+						.add(postMap)
+						.addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+							@Override
+							public void onSuccess(DocumentReference documentReference) {
+								mDialog.dismiss();
+								Toasty.success(PostText.this, "Post sent", Toasty.LENGTH_SHORT, true).show();
+								finish();
+							}
+						})
+						.addOnFailureListener(new OnFailureListener() {
+							@Override
+							public void onFailure(@NonNull Exception e) {
+								mDialog.dismiss();
+								Log.e("Error sending post", e.getMessage());
+							}
+						});
 
-            case R.id.fab6:
-                mImageholder.setBackground(getResources().getDrawable(R.drawable.gradient_6));
-                color = "6";
-                return;
+			}
+		}).addOnFailureListener(new OnFailureListener() {
+			@Override
+			public void onFailure(@NonNull Exception e) {
+				mDialog.dismiss();
+				Log.e("Error getting user", e.getMessage());
+			}
+		});
 
-            case R.id.fab7:
-                mImageholder.setBackground(getResources().getDrawable(R.drawable.gradient_7));
-                color = "7";
-                return;
+	}
 
-            case R.id.fab8:
-                mImageholder.setBackground(getResources().getDrawable(R.drawable.gradient_8));
-                color = "8";
-                return;
+	public void onFabClicked(View view) {
 
-            case R.id.fab9:
-                mImageholder.setBackground(getResources().getDrawable(R.drawable.gradient_9));
-                color = "9";
-                return;
+		switch (view.getId()) {
 
-            case R.id.fab10:
-                mImageholder.setBackground(getResources().getDrawable(R.drawable.gradient_10));
-                color = "10";
-                return;
+			case R.id.fab1:
+				mImageholder.setBackground(getResources().getDrawable(R.drawable.gradient_1));
+				color = "1";
+				return;
 
-            case R.id.fab11:
-                mImageholder.setBackground(getResources().getDrawable(R.drawable.gradient_11));
-                color = "11";
-                return;
+			case R.id.fab2:
+				mImageholder.setBackground(getResources().getDrawable(R.drawable.gradient_2));
+				color = "2";
+				return;
 
-            case R.id.fab12:
-                mImageholder.setBackground(getResources().getDrawable(R.drawable.gradient_12));
-                color = "12";
-                return;
+			case R.id.fab3:
+				mImageholder.setBackground(getResources().getDrawable(R.drawable.gradient_3));
+				color = "3";
+				return;
 
-            case R.id.fab13:
-                mImageholder.setBackground(getResources().getDrawable(R.drawable.gradient_13));
-                color = "13";
-                return;
+			case R.id.fab4:
+				mImageholder.setBackground(getResources().getDrawable(R.drawable.gradient_4));
+				color = "4";
+				return;
 
-            case R.id.fab14:
-                mImageholder.setBackground(getResources().getDrawable(R.drawable.gradient_14));
-                color = "14";
-                return;
+			case R.id.fab5:
+				mImageholder.setBackground(getResources().getDrawable(R.drawable.gradient_5));
+				color = "5";
+				return;
 
-            case R.id.fab15:
-                mImageholder.setBackground(getResources().getDrawable(R.drawable.gradient_15));
-                color = "15";
-                return;
+			case R.id.fab6:
+				mImageholder.setBackground(getResources().getDrawable(R.drawable.gradient_6));
+				color = "6";
+				return;
 
-            case R.id.fab16:
-                mImageholder.setBackground(getResources().getDrawable(R.drawable.gradient_16));
-                color = "16";
-                return;
+			case R.id.fab7:
+				mImageholder.setBackground(getResources().getDrawable(R.drawable.gradient_7));
+				color = "7";
+				return;
 
-            case R.id.fab17:
-                mImageholder.setBackground(getResources().getDrawable(R.drawable.gradient_17));
-                color = "17";
-                return;
+			case R.id.fab8:
+				mImageholder.setBackground(getResources().getDrawable(R.drawable.gradient_8));
+				color = "8";
+				return;
 
-            case R.id.fab18:
-                mImageholder.setBackground(getResources().getDrawable(R.drawable.gradient_18));
-                color = "18";
-                return;
+			case R.id.fab9:
+				mImageholder.setBackground(getResources().getDrawable(R.drawable.gradient_9));
+				color = "9";
+				return;
 
-            case R.id.fab19:
-                mImageholder.setBackground(getResources().getDrawable(R.drawable.gradient_19));
-                color = "19";
+			case R.id.fab10:
+				mImageholder.setBackground(getResources().getDrawable(R.drawable.gradient_10));
+				color = "10";
+				return;
 
-        }
+			case R.id.fab11:
+				mImageholder.setBackground(getResources().getDrawable(R.drawable.gradient_11));
+				color = "11";
+				return;
 
-    }
+			case R.id.fab12:
+				mImageholder.setBackground(getResources().getDrawable(R.drawable.gradient_12));
+				color = "12";
+				return;
+
+			case R.id.fab13:
+				mImageholder.setBackground(getResources().getDrawable(R.drawable.gradient_13));
+				color = "13";
+				return;
+
+			case R.id.fab14:
+				mImageholder.setBackground(getResources().getDrawable(R.drawable.gradient_14));
+				color = "14";
+				return;
+
+			case R.id.fab15:
+				mImageholder.setBackground(getResources().getDrawable(R.drawable.gradient_15));
+				color = "15";
+				return;
+
+			case R.id.fab16:
+				mImageholder.setBackground(getResources().getDrawable(R.drawable.gradient_16));
+				color = "16";
+				return;
+
+			case R.id.fab17:
+				mImageholder.setBackground(getResources().getDrawable(R.drawable.gradient_17));
+				color = "17";
+				return;
+
+			case R.id.fab18:
+				mImageholder.setBackground(getResources().getDrawable(R.drawable.gradient_18));
+				color = "18";
+				return;
+
+			case R.id.fab19:
+				mImageholder.setBackground(getResources().getDrawable(R.drawable.gradient_19));
+				color = "19";
+
+		}
+
+	}
 
 
 }
